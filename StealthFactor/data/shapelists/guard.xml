@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shapelist>
+	<shapes>
+		<rectangle>
+			<x>0</x>
+			<y>0</y>
+			<width>20</width>
+			<height>40</height>
+			<fill_color>
+				<r>252</r>
+				<g>112</g>
+				<b>121</b>
+			</fill_color>
+			<outline_color>
+				<r>218</r>
+				<g>32</g>
+				<b>84</b>
+			</outline_color>
+			<outline_thickness>2</outline_thickness>
+		</rectangle>
+		<circle>
+			<x>5</x>
+			<y>0</y>
+			<radius>15</radius>
+			<fill_color>
+				<r>233</r>
+				<g>23</g>
+				<b>70</b>
+			</fill_color>
+			<outline_color>
+				<r>218</r>
+				<g>32</g>
+				<b>84</b>
+			</outline_color>
+			<outline_thickness>2</outline_thickness>
+		</circle>
+	</shapes>
+</shapelist>

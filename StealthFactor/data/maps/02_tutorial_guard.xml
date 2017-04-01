@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+	<rows>5</rows>
+	<columns>5</columns>
+	<elements>
+		<player>
+			<row>0</row>
+			<column>0</column>
+		</player>
+		<target>
+			<row>4</row>
+			<column>4</column>
+		</target>
+		<enemy>
+			<archetype>guard</archetype>
+			<row>2</row>
+			<column>2</column>
+		</enemy>
+	</elements>
+</map>

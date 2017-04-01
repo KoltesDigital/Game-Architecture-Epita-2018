@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shapelist>
+	<shapes>
+		<circle>
+			<x>0</x>
+			<y>0</y>
+			<radius>20</radius>
+			<fill_color>
+				<r>143</r>
+				<g>242</g>
+				<b>161</b>
+			</fill_color>
+			<outline_color>
+				<r>50</r>
+				<g>173</g>
+				<b>80</b>
+			</outline_color>
+			<outline_thickness>2</outline_thickness>
+		</circle>
+	</shapes>
+</shapelist>
