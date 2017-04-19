@@ -61,64 +61,7 @@ filter "platforms:Win32"
 filter "platforms:Win64"
 	architecture "x64"
 
-workspace "StealthFactor"
-	language "C++"
-	location "build"
-	startproject "Engine"
-
-project "Platform"
-	files {
-		"code/platform/**",
-	}
-	includedirs {
-		"code",
-		"dep/include",
-	}
-	location "build/Platform"
-	kind "StaticLib"
-	-- rtti "Off"
-
-	filter "platforms:Linux*"
-		files {
-			"code/platform-linux/**",
-		}
-
-	filter "platforms:Linux32"
-		targetdir "build/Platform/Linux32"
-
-	filter "platforms:Linux64"
-		targetdir "build/Platform/Linux64"
-
-	filter "platforms:Win*"
-		files {
-			"code/platform-win/**",
-		}
-
-	filter "platforms:Win32"
-		targetdir "build/Platform/Win32"
-
-	filter "platforms:Win64"
-		targetdir "build/Platform/Win64"
-
-project "Engine"
-	debugargs {
-		"-data",
-		"../../../data",
-	}
-	files {
-		"code/engine/**",
-	}
-	includedirs {
-		"code",
-		"dep/include",
-	}
-	links {
-		"Platform",
-	}
-	location "build/Engine"
-	kind "ConsoleApp"
-	-- rtti "Off"
-
+function runsWithDependencies()
 	filter "configurations:Debug"
 		links {
 			"ode_singled",
@@ -145,14 +88,12 @@ project "Engine"
 		libdirs {
 			"dep/linux/lib32",
 		}
-		targetdir "build/Engine/Linux32"
 
 	filter "platforms:Linux64"
 		debugdir "dep/linux/bin64"
 		libdirs {
 			"dep/linux/lib64",
 		}
-		targetdir "build/Engine/Linux64"
 
 	filter "platforms:Win*"
 		links {
@@ -165,11 +106,82 @@ project "Engine"
 		libdirs {
 			"dep/windows/lib32",
 		}
-		targetdir "build/Engine/Win32"
 
 	filter "platforms:Win64"
 		debugdir "dep/windows/bin64"
 		libdirs {
 			"dep/windows/lib64",
 		}
-		targetdir "build/Engine/Win64"
+end
+
+workspace "StealthFactor"
+	language "C++"
+	location "build"
+	startproject "Game"
+
+project "Platform"
+	files {
+		"code/platform/**",
+	}
+	includedirs {
+		"code",
+		"dep/include",
+	}
+	kind "StaticLib"
+	rtti "Off"
+
+	filter "platforms:Linux*"
+		files {
+			"code/platform-linux/**",
+		}
+
+	filter "platforms:Win*"
+		files {
+			"code/platform-win/**",
+		}
+
+project "Engine"
+	files {
+		"code/engine/**",
+	}
+	includedirs {
+		"code",
+		"dep/include",
+	}
+	kind "StaticLib"
+	-- rtti "Off"
+
+project "Game"
+	debugargs {
+		"-data",
+		"../../../data",
+	}
+	files {
+		"code/game/**",
+	}
+	includedirs {
+		"code",
+		"dep/include",
+	}
+	links {
+		"Engine",
+		"Platform",
+	}
+	kind "ConsoleApp"
+	-- rtti "Off"
+	runsWithDependencies()
+
+project "Sandbox"
+	files {
+		"code/sandbox/**",
+	}
+	includedirs {
+		"code",
+		"dep/include",
+	}
+	links {
+		"Engine",
+	}
+	kind "ConsoleApp"
+	-- rtti "Off"
+	runsWithDependencies()
