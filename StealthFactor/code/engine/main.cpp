@@ -1,6 +1,6 @@
 #include <iostream>
-#include <windows.h>
 #include <cli.hpp>
+#include <platform/SetWorkingDirectory.hpp>
 #include <engine/Engine.hpp>
 
 int main(int argc, const char **argv)
@@ -15,17 +15,11 @@ int main(int argc, const char **argv)
 		.defaultValue("data")
 		.getValue();
 
-#ifdef PLATFORM_WINDOWS
-	wchar_t wDataPath[4096];
-	MultiByteToWideChar(CP_ACP, 0, dataPath, -1, wDataPath, 4096);
-	if (!SetCurrentDirectory(wDataPath))
+	if (!platform::SetWorkingDirectory(dataPath))
 	{
 		std::cerr << "Unable to set data directory." << std::endl;
 		return EXIT_FAILURE;
 	}
-#else
-#error Unsupported platform
-#endif
 
 	engine::Engine::getInstance().loadConfiguration();
 	engine::Engine::getInstance().run();
