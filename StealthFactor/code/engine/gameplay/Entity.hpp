@@ -6,9 +6,12 @@ namespace engine
 {
 	namespace gameplay
 	{
+		struct EntityContext;
+
 		class Entity
 		{
 		public:
+			Entity(EntityContext &context);
 			virtual ~Entity() = default;
 
 			virtual void update() = 0;
@@ -21,6 +24,9 @@ namespace engine
 			void setRotation(float newRotation);
 
 			const sf::Transform &getTransform() const;
+
+		protected:
+			EntityContext & context;
 
 		private:
 			sf::Vector2f _position{};

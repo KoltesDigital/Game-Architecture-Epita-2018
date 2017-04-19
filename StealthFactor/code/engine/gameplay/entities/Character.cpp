@@ -1,5 +1,6 @@
 #include "Character.hpp"
 
+#include <engine/gameplay/EntityContext.hpp>
 #include <engine/graphics/GraphicsManager.hpp>
 #include <engine/physics/PhysicsManager.hpp>
 
@@ -9,9 +10,10 @@ namespace engine
 	{
 		namespace entities
 		{
-			Character::Character()
+			Character::Character(EntityContext &context)
+				: Entity{ context }
 			{
-				collisionGeomId = dCreateBox(physics::Manager::getInstance().getSpaceId(), 0.f, 0.f, 0.f);
+				collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), 0.f, 0.f, 0.f);
 				dGeomSetData(collisionGeomId, this);
 			}
 
@@ -22,7 +24,7 @@ namespace engine
 
 			void Character::draw()
 			{
-				graphics::Manager::getInstance().draw(shapeList, getTransform());
+				context.graphicsManager.draw(shapeList, getTransform());
 			}
 		}
 	}

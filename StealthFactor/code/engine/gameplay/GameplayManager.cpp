@@ -15,7 +15,11 @@ namespace engine
 	namespace gameplay
 	{
 		const float Manager::CELL_SIZE = 50.f;
-		Manager *Manager::instance = nullptr;
+
+		Manager::Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager)
+			: context{ graphicsManager, inputManager, physicsManager, *this }
+		{
+		}
 
 		void Manager::update()
 		{
@@ -40,18 +44,7 @@ namespace engine
 			}
 		}
 
-		void Manager::gameOver()
-		{
-			std::cout << "Game over" << std::endl;
-			loadMap(currentMapName);
-		}
-
-		sf::Vector2f Manager::getViewCenter() const
-		{
-			return sf::Vector2f{ columns * (CELL_SIZE / 2.f), rows * (CELL_SIZE / 2.f) };
-		}
-
-		void Manager::loadMap(const std::string & mapName)
+		void Manager::loadMap(const std::string &mapName)
 		{
 			for (auto entity : entities)
 			{
@@ -88,7 +81,7 @@ namespace engine
 
 						std::string archetypeName = xmlElement.child_value("archetype");
 
-						auto entity = new entities::Enemy{ archetypeName };
+						auto entity = new entities::Enemy{ context, archetypeName };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
 						entities.insert(entity);
@@ -102,7 +95,7 @@ namespace engine
 						int column = std::stoi(xmlElement.child_value("column"));
 						assert(column >= 0 && column < columns);
 
-						auto entity = new entities::Player{};
+						auto entity = new entities::Player{ context };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
 						entities.insert(entity);
@@ -117,7 +110,7 @@ namespace engine
 						int column = std::stoi(xmlElement.child_value("column"));
 						assert(column >= 0 && column < columns);
 
-						auto entity = new entities::Target{};
+						auto entity = new entities::Target{ context };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
 						entities.insert(entity);
@@ -139,6 +132,12 @@ namespace engine
 			}
 		}
 
+		void Manager::gameOver()
+		{
+			std::cout << "Game over" << std::endl;
+			loadMap(currentMapName);
+		}
+
 		void Manager::loadNextMap()
 		{
 			if (!preventMapCompletion)
@@ -153,12 +152,9 @@ namespace engine
 			return *playerEntity;
 		}
 
-		Manager &Manager::getInstance()
+		sf::Vector2f Manager::getViewCenter() const
 		{
-			if (!instance)
-				instance = new Manager();
-
-			return *instance;
+			return sf::Vector2f{ columns * (CELL_SIZE / 2.f), rows * (CELL_SIZE / 2.f) };
 		}
 	}
 }

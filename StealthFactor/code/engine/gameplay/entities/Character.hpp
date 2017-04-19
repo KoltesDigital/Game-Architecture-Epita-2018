@@ -13,7 +13,7 @@ namespace engine
 			class Character : public Entity
 			{
 			public:
-				Character();
+				Character(EntityContext &context);
 				virtual ~Character();
 
 				virtual void draw() override;

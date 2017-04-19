@@ -21,8 +21,21 @@ int main(int argc, const char **argv)
 		return EXIT_FAILURE;
 	}
 
-	engine::Engine::getInstance().loadConfiguration();
-	engine::Engine::getInstance().run();
+	engine::Engine engine{};
+
+	if (!engine.loadConfiguration())
+	{
+		return EXIT_FAILURE;
+	}
+
+	if (!engine.setUp())
+	{
+		engine.tearDown();
+		return EXIT_FAILURE;
+	}
+
+	engine.run();
+	engine.tearDown();
 
 	return EXIT_SUCCESS;
 }

@@ -21,8 +21,8 @@ namespace engine
 
 			using Collisions = std::vector<Collision>;
 
-			Manager();
-			~Manager();
+			bool setUp();
+			void tearDown();
 
 			void update();
 
@@ -30,15 +30,11 @@ namespace engine
 
 			std::set<dGeomID> getCollisionsWith(dGeomID object) const;
 
-			static Manager &getInstance();
-
 		private:
-			dSpaceID spaceId;
+			dSpaceID spaceId{};
 			Collisions frameCollisions;
 
 			static void nearCallback(void *data, dGeomID o1, dGeomID o2);
-
-			static Manager *instance;
 		};
 	}
 }

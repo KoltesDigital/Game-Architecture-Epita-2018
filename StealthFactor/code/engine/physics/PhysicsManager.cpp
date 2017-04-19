@@ -6,24 +6,27 @@ namespace engine
 {
 	namespace physics
 	{
-		Manager *Manager::instance = nullptr;
-
 		Manager::Collision::Collision(dGeomID o1, dGeomID o2)
 			: o1{ o1 }
 			, o2{ o2 }
 		{
 		}
 
-		Manager::Manager()
+		bool Manager::setUp()
 		{
 			dInitODE();
 
 			spaceId = dHashSpaceCreate(0);
+			return spaceId != nullptr;
 		}
 
-		Manager::~Manager()
+		void Manager::tearDown()
 		{
-			dSpaceDestroy(spaceId);
+			if (spaceId != nullptr)
+			{
+				dSpaceDestroy(spaceId);
+			}
+
 			dCloseODE();
 		}
 
@@ -61,14 +64,6 @@ namespace engine
 		{
 			auto &frameCollisions = *reinterpret_cast<Collisions *>(data);
 			frameCollisions.emplace_back(o1, o2);
-		}
-
-		Manager &Manager::getInstance()
-		{
-			if (!instance)
-				instance = new Manager();
-
-			return *instance;
 		}
 	}
 }

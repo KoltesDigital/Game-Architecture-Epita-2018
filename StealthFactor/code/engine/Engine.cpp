@@ -5,16 +5,16 @@
 #include <sstream>
 #include <pugixml/pugixml.hpp>
 #include <SFML/System.hpp>
-#include <engine/gameplay/GameplayManager.hpp>
-#include <engine/graphics/GraphicsManager.hpp>
-#include <engine/physics/PhysicsManager.hpp>
-#include <engine/input/InputManager.hpp>
 
 namespace engine
 {
-	Engine *Engine::instance = nullptr;
+	Engine::Engine()
+		: graphicsManager{ *this, gameplayManager }
+		, gameplayManager{ graphicsManager, inputManager, physicsManager }
+	{
+	}
 
-	void Engine::loadConfiguration()
+	bool Engine::loadConfiguration()
 	{
 		pugi::xml_document doc;
 		pugi::xml_parse_result result = doc.load_file("configuration.xml");
@@ -24,35 +24,62 @@ namespace engine
 			assert(!doc.empty());
 			auto configuration = doc.first_child();
 			startMap = configuration.child_value("start_map");
+
+			return true;
 		}
 		else
 		{
 			std::cerr << "Configuration parsed with errors." << std::endl;
 			std::cerr << "Error description: " << result.description() << std::endl;
 			std::cerr << "Error offset: " << result.offset << std::endl;
+
+			return false;
 		}
+	}
+
+	bool Engine::setUp()
+	{
+		if (!graphicsManager.setUp())
+		{
+			return false;
+		}
+
+		if (!physicsManager.setUp())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	void Engine::tearDown()
+	{
+		physicsManager.tearDown();
+		graphicsManager.tearDown();
 	}
 
 	void Engine::run()
 	{
 		running = true;
 
-		gameplay::Manager::getInstance().loadMap(startMap);
+		gameplayManager.loadMap(startMap);
 
 		sf::Clock clock;
 		while (running)
 		{
 			deltaTime = clock.restart().asSeconds();
 
-			physics::Manager::getInstance().update();
-			gameplay::Manager::getInstance().update();
-			graphics::Manager::getInstance().update();
+			inputManager.clear();
 
-			graphics::Manager::getInstance().clear();
+			physicsManager.update();
+			graphicsManager.update();
+			gameplayManager.update();
 
-			gameplay::Manager::getInstance().draw();
+			graphicsManager.clear();
 
-			graphics::Manager::getInstance().display();
+			gameplayManager.draw();
+
+			graphicsManager.display();
 		}
 	}
 
@@ -61,16 +88,29 @@ namespace engine
 		return deltaTime;
 	}
 
-	void Engine::exit()
+	void Engine::onEvent(const sf::Event &event)
 	{
-		running = false;
-	}
+		switch (event.type)
+		{
+		case sf::Event::Closed:
+			running = false;
+			break;
 
-	Engine &Engine::getInstance()
-	{
-		if (!instance)
-			instance = new Engine();
+		case sf::Event::LostFocus:
+			inputManager.setActive(false);
+			break;
 
-		return *instance;
+		case sf::Event::GainedFocus:
+			inputManager.setActive(true);
+			break;
+
+		case sf::Event::KeyPressed:
+			inputManager.onKeyPressed(event.key);
+			break;
+
+		case sf::Event::KeyReleased:
+			inputManager.onKeyReleased(event.key);
+			break;
+		}
 	}
 }

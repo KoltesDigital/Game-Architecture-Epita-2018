@@ -13,7 +13,7 @@ namespace engine
 			class Target : public Entity
 			{
 			public:
-				Target();
+				Target(EntityContext &context);
 				~Target();
 
 				virtual void update() override;

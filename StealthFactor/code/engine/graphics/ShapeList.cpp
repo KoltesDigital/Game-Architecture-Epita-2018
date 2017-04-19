@@ -10,7 +10,7 @@ namespace engine
 {
 	namespace graphics
 	{
-		bool ShapeList::load(const std::string & name)
+		bool ShapeList::load(const std::string &name)
 		{
 			std::stringstream filename;
 			filename << "shapelists/" << name << ".xml";
