@@ -1,5 +1,6 @@
 #include "Target.hpp"
 
+#include <cassert>
 #include <engine/gameplay/EntityContext.hpp>
 #include <engine/gameplay/GameplayManager.hpp>
 #include <engine/graphics/GraphicsManager.hpp>
@@ -14,26 +15,30 @@ namespace engine
 			Target::Target(EntityContext &context)
 				: Entity{ context }
 			{
-				_shapeList.load("target");
+				_shapeListId = _context.graphicsManager.createShapeListInstance("target");
+				assert(_shapeListId);
 
-				_collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
-				dGeomSetData(_collisionGeomId, this);
+				_collisionGeomId = _context.physicsManager.createCollisionBox(this, gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f);
+				assert(_collisionGeomId);
 			}
 
 			Target::~Target()
 			{
-				dGeomDestroy(_collisionGeomId);
+				_context.graphicsManager.destroyShapeListInstance(_shapeListId);
+				_context.physicsManager.destroyCollisionVolume(_collisionGeomId);
 			}
 
 			void Target::update()
 			{
-				auto &position = getPosition();
-				dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
+				propagateTransform();
 			}
 
-			void Target::draw()
+			void Target::propagateTransform()
 			{
-				_context.graphicsManager.draw(_shapeList, getTransform());
+				_context.graphicsManager.setShapeListInstanceTransform(_shapeListId, getTransform());
+
+				auto &position = getPosition();
+				dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 #include "engine/gameplay/entities/Player.hpp"
 
+#include <cassert>
 #include <ode/collision.h>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Shape.hpp>
@@ -20,10 +21,8 @@ namespace engine
 			Player::Player(EntityContext &context)
 				: Character{ context }
 			{
-				_shapeList.load("player");
-
-				_collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
-				dGeomSetData(_collisionGeomId, this);
+				_shapeListId = _context.graphicsManager.createShapeListInstance("player");
+				assert(_shapeListId);
 			}
 
 			void Player::update()
@@ -64,14 +63,12 @@ namespace engine
 				{
 					setPosition(position);
 					setRotation(rotation);
-
-					dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
+					propagateTransform();
 				}
 
 				auto collisions = _context.physicsManager.getCollisionsWith(_collisionGeomId);
-				for (auto &geomId : collisions)
+				for (auto &entity : collisions)
 				{
-					auto entity = reinterpret_cast<Entity *>(dGeomGetData(geomId));
 					auto targetEntity = dynamic_cast<entities::Target *>(entity);
 					if (targetEntity)
 					{

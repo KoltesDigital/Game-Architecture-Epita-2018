@@ -23,8 +23,10 @@ namespace engine
 		public:
 			Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager);
 
+			void setUp();
+			void tearDown();
+
 			void update();
-			void draw();
 
 			void loadMap(const std::string &mapName);
 
@@ -54,6 +56,8 @@ namespace engine
 
 			bool _preventMapCompletion{ false };
 			bool _nextMapRequested{ false };
+
+			void removeEntities();
 		};
 	}
 }

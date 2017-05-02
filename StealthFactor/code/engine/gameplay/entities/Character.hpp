@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ode/collision.h>
-#include <engine/graphics/ShapeList.hpp>
+#include <engine/graphics/ShapeListId.hpp>
 #include <engine/gameplay/Entity.hpp>
 
 namespace engine
@@ -16,10 +16,10 @@ namespace engine
 				Character(EntityContext &context);
 				virtual ~Character();
 
-				virtual void draw() override;
+				void propagateTransform();
 
 			protected:
-				graphics::ShapeList _shapeList;
+				graphics::ShapeListId _shapeListId;
 				dGeomID _collisionGeomId;
 
 				bool _isWalking{ false };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ode/collision.h>
-#include <engine/graphics/ShapeList.hpp>
+#include <engine/graphics/ShapeListId.hpp>
 #include <engine/gameplay/Entity.hpp>
 
 namespace engine
@@ -18,10 +18,10 @@ namespace engine
 
 				virtual void update() override;
 
-				virtual void draw() override;
+				void propagateTransform();
 
 			private:
-				graphics::ShapeList _shapeList;
+				graphics::ShapeListId _shapeListId;
 				dGeomID _collisionGeomId;
 			};
 		}

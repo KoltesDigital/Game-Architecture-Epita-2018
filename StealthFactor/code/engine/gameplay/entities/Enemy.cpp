@@ -6,6 +6,7 @@
 #include <engine/gameplay/EntityContext.hpp>
 #include <engine/gameplay/GameplayManager.hpp>
 #include <engine/gameplay/entities/Player.hpp>
+#include <engine/graphics/GraphicsManager.hpp>
 
 namespace engine
 {
@@ -62,7 +63,8 @@ namespace engine
 					auto xmlArchetype = doc.first_child();
 
 					std::string shapeListName = xmlArchetype.child_value("shapelist");
-					assert(_shapeList.load(shapeListName));
+					_shapeListId = _context.graphicsManager.createShapeListInstance(shapeListName);
+					assert(_shapeListId);
 
 					_visionRadius = std::stof(xmlArchetype.child_value("vision_radius"));
 					assert(_visionRadius > 0.f);

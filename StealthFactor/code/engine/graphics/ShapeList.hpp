@@ -1,12 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
-
-namespace sf
-{
-	class Shape;
-}
+#include <SFML/Graphics/Shape.hpp>
 
 namespace engine
 {
@@ -15,7 +12,8 @@ namespace engine
 		class ShapeList
 		{
 		public:
-			using Shapes = std::vector<sf::Shape *>;
+			using ShapePtr = std::unique_ptr<sf::Shape>;
+			using Shapes = std::vector<ShapePtr>;
 
 			bool load(const std::string &name);
 

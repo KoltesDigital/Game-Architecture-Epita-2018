@@ -43,14 +43,14 @@ namespace engine
 
 						float outlineThickness = std::stof(xmlShape.child_value("outline_thickness"));
 
-						auto shape = new sf::CircleShape{ radius };
+						ShapePtr shape{ new sf::CircleShape{ radius } };
 						shape->setOrigin(radius, radius);
 						shape->setPosition(x, y);
 						shape->setFillColor(fillColor);
 						shape->setOutlineColor(outlineColor);
 						shape->setOutlineThickness(outlineThickness);
 
-						_shapes.push_back(shape);
+						_shapes.push_back(std::move(shape));
 					}
 
 					if (!std::strcmp(xmlShape.name(), "rectangle"))
@@ -72,14 +72,14 @@ namespace engine
 
 						float outlineThickness = std::stof(xmlShape.child_value("outline_thickness"));
 
-						auto shape = new sf::RectangleShape{ sf::Vector2f{width, height} };
+						ShapePtr shape{ new sf::RectangleShape{ sf::Vector2f{width, height} } };
 						shape->setOrigin(width / 2.f, height / 2.f);
 						shape->setPosition(x, y);
 						shape->setFillColor(fillColor);
 						shape->setOutlineColor(outlineColor);
 						shape->setOutlineThickness(outlineThickness);
 
-						_shapes.push_back(shape);
+						_shapes.push_back(std::move(shape));
 					}
 				}
 

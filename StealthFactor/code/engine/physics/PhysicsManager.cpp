@@ -1,5 +1,6 @@
 #include "PhysicsManager.hpp"
 
+#include <cassert>
 #include <ode/odeinit.h>
 
 namespace engine
@@ -24,6 +25,7 @@ namespace engine
 		{
 			if (_spaceId != nullptr)
 			{
+				assert(dSpaceGetNumGeoms(_spaceId) == 0);
 				dSpaceDestroy(_spaceId);
 			}
 
@@ -36,28 +38,35 @@ namespace engine
 			dSpaceCollide(_spaceId, &_frameCollisions, &Manager::nearCallback);
 		}
 
-		const dSpaceID Manager::getSpaceId() const
+		dGeomID Manager::createCollisionBox(gameplay::Entity *entity, float width, float height)
 		{
-			return _spaceId;
+			auto id = dCreateBox(_spaceId, width, height, 1.f);
+			dGeomSetData(id, entity);
+			return id;
 		}
 
-		std::set<dGeomID> Manager::getCollisionsWith(dGeomID object) const
+		void Manager::destroyCollisionVolume(dGeomID id)
 		{
-			std::set<dGeomID> objectCollisions;
+			dGeomDestroy(id);
+		}
+
+		std::set<gameplay::Entity *> Manager::getCollisionsWith(dGeomID object) const
+		{
+			std::set<gameplay::Entity *> entityCollisions;
 
 			for (auto &collision : _frameCollisions)
 			{
 				if (collision.o1 == object)
 				{
-					objectCollisions.insert(collision.o2);
+					entityCollisions.insert(reinterpret_cast<gameplay::Entity *>(dGeomGetData(collision.o2)));
 				}
 				if (collision.o2 == object)
 				{
-					objectCollisions.insert(collision.o1);
+					entityCollisions.insert(reinterpret_cast<gameplay::Entity *>(dGeomGetData(collision.o1)));
 				}
 			}
 
-			return objectCollisions;
+			return entityCollisions;
 		}
 
 		void Manager::nearCallback(void *data, dGeomID o1, dGeomID o2)

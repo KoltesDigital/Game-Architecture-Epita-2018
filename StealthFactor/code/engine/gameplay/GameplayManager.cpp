@@ -21,6 +21,15 @@ namespace engine
 		{
 		}
 
+		void Manager::setUp()
+		{
+		}
+
+		void Manager::tearDown()
+		{
+			removeEntities();
+		}
+
 		void Manager::update()
 		{
 			for (auto &entity : _entities)
@@ -36,17 +45,9 @@ namespace engine
 			}
 		}
 
-		void Manager::draw()
-		{
-			for (auto &entity : _entities)
-			{
-				entity->draw();
-			}
-		}
-
 		void Manager::loadMap(const std::string &mapName)
 		{
-			_entities.clear();
+			removeEntities();
 
 			std::stringstream filename;
 			filename << "maps/" << mapName << ".xml";
@@ -77,8 +78,10 @@ namespace engine
 
 						std::string archetypeName = xmlElement.child_value("archetype");
 
-						EntityPtr entity{ new entities::Enemy{ _context, archetypeName } };
+						auto enemyEntity{ new entities::Enemy{ _context, archetypeName } };
+						EntityPtr entity{ enemyEntity };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
+						enemyEntity->propagateTransform();
 
 						_entities.insert(std::move(entity));
 					}
@@ -94,6 +97,7 @@ namespace engine
 						_playerEntity = new entities::Player{ _context };
 						EntityPtr entity{ _playerEntity };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
+						_playerEntity->propagateTransform();
 
 						_entities.insert(std::move(entity));
 					}
@@ -106,8 +110,10 @@ namespace engine
 						int column = std::stoi(xmlElement.child_value("column"));
 						assert(column >= 0 && column < _columns);
 
-						EntityPtr entity{ new entities::Target{ _context } };
+						auto targetEntity = new entities::Target{ _context };
+						EntityPtr entity{ targetEntity };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
+						targetEntity->propagateTransform();
 
 						_entities.insert(std::move(entity));
 					}
@@ -151,6 +157,12 @@ namespace engine
 		sf::Vector2f Manager::getViewCenter() const
 		{
 			return sf::Vector2f{ _columns * (CELL_SIZE / 2.f), _rows * (CELL_SIZE / 2.f) };
+		}
+
+		void Manager::removeEntities()
+		{
+			_entities.clear();
+			_playerEntity = nullptr;
 		}
 	}
 }

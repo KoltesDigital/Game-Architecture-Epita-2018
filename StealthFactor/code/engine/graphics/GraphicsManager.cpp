@@ -1,10 +1,9 @@
 #include "engine/graphics/GraphicsManager.hpp"
 
 #include <cassert>
-#include <SFML/Graphics/Shape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <engine/input/InputManager.hpp>
-#include <engine/graphics/ShapeList.hpp>
+#include <engine/graphics/ShapeListInstance.hpp>
 #include <engine/graphics/ViewProvider.hpp>
 #include <engine/gameplay/GameplayManager.hpp>
 #include <engine/Engine.hpp>
@@ -16,6 +15,10 @@ namespace engine
 		Manager::Manager(EventListener &eventListener, ViewProvider &viewProvider)
 			: _eventListener{ eventListener }
 			, _viewProvider{ viewProvider }
+		{
+		}
+
+		Manager::~Manager()
 		{
 		}
 
@@ -35,10 +38,12 @@ namespace engine
 
 		void Manager::tearDown()
 		{
+			assert(_shapeListInstances.size() == 0);
+
 			_window.close();
 		}
 
-		void Manager::update()
+		void Manager::pollEvents()
 		{
 			sf::Event event;
 			while (_window.pollEvent(event))
@@ -47,25 +52,53 @@ namespace engine
 			}
 		}
 
-		void Manager::clear()
+		ShapeListId Manager::createShapeListInstance(const std::string &name)
+		{
+			auto instance{ new ShapeListInstance() };
+			ShapeListInstancePtr instanceUPtr{ instance };
+
+			if (!instance->shapeList.load(name))
+			{
+				return nullptr;
+			}
+
+			_shapeListInstances.insert(std::move(instanceUPtr));
+			return instance;
+		}
+
+		void Manager::destroyShapeListInstance(ShapeListId id)
+		{
+			auto it = std::find_if(std::begin(_shapeListInstances), std::end(_shapeListInstances), [id](auto &instance)
+			{
+				return instance.get() == id;
+			});
+			assert(it != std::end(_shapeListInstances));
+			_shapeListInstances.erase(it);
+		}
+
+		void Manager::setShapeListInstanceTransform(ShapeListId id, const sf::Transform & transform)
+		{
+			// TODO Optimize (kd-tree...)
+			ShapeListInstance *instance = id;
+			instance->transform = transform;
+		}
+
+		void Manager::draw()
 		{
 			_window.clear(sf::Color::Black);
 
 			sf::View view{ _viewProvider.getViewCenter(), sf::Vector2f{(float)WINDOW_WIDTH, (float)WINDOW_HEIGHT} };
 			_window.setView(view);
-		}
 
-		void Manager::draw(const ShapeList &shapeList, const sf::Transform &transform)
-		{
-			sf::RenderStates renderStates{ transform };
-			for (auto shape : shapeList.getShapes())
+			for (auto &instance : _shapeListInstances)
 			{
-				_window.draw(*shape, renderStates);
+				sf::RenderStates renderStates{ instance->transform };
+				for (auto &shape : instance->shapeList.getShapes())
+				{
+					_window.draw(*shape, renderStates);
+				}
 			}
-		}
 
-		void Manager::display()
-		{
 			_window.display();
 		}
 	}

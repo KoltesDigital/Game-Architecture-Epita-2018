@@ -1,6 +1,8 @@
 #include "Character.hpp"
 
+#include <cassert>
 #include <engine/gameplay/EntityContext.hpp>
+#include <engine/gameplay/GameplayManager.hpp>
 #include <engine/graphics/GraphicsManager.hpp>
 #include <engine/physics/PhysicsManager.hpp>
 
@@ -13,18 +15,22 @@ namespace engine
 			Character::Character(EntityContext &context)
 				: Entity{ context }
 			{
-				_collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), 0.f, 0.f, 0.f);
-				dGeomSetData(_collisionGeomId, this);
+				_collisionGeomId = _context.physicsManager.createCollisionBox(this, gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f);
+				assert(_collisionGeomId);
 			}
 
 			Character::~Character()
 			{
-				dGeomDestroy(_collisionGeomId);
+				_context.graphicsManager.destroyShapeListInstance(_shapeListId);
+				_context.physicsManager.destroyCollisionVolume(_collisionGeomId);
 			}
 
-			void Character::draw()
+			void Character::propagateTransform()
 			{
-				_context.graphicsManager.draw(_shapeList, getTransform());
+				_context.graphicsManager.setShapeListInstanceTransform(_shapeListId, getTransform());
+
+				auto &position = getPosition();
+				dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
 			}
 		}
 	}
