@@ -1,9 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <set>
 #include <string>
 #include <SFML/System/Vector2.hpp>
 #include <engine/graphics/ViewProvider.hpp>
+#include <engine/gameplay/Entity.hpp>
 #include <engine/gameplay/EntityContext.hpp>
 #include <engine/gameplay/EntityListener.hpp>
 
@@ -11,8 +13,6 @@ namespace engine
 {
 	namespace gameplay
 	{
-		class Entity;
-
 		namespace entities
 		{
 			class Player;
@@ -39,9 +39,11 @@ namespace engine
 			static const float CELL_SIZE;
 
 		private:
+			using EntityPtr = std::unique_ptr<Entity>;
+
 			EntityContext _context;
 
-			std::set<Entity *> _entities;
+			std::set<EntityPtr> _entities;
 			entities::Player *_playerEntity{};
 
 			// Map
