@@ -5,10 +5,9 @@
 #include <string>
 #include <vector>
 #include <pugixml/pugixml.hpp>
-#include <engine/Engine.hpp>
-#include <engine/gameplay/entities/Enemy.hpp>
-#include <engine/gameplay/entities/Player.hpp>
-#include <engine/gameplay/entities/Target.hpp>
+#include <engine/gameplay/Prefab.hpp>
+#include <engine/gameplay/components/Player.hpp>
+#include <engine/gameplay/components/Transform.hpp>
 
 namespace engine
 {
@@ -68,54 +67,52 @@ namespace engine
 
 				for (auto &xmlElement : xmlMap.child("elements").children())
 				{
+					std::string prefabName;
+
 					if (!std::strcmp(xmlElement.name(), "enemy"))
 					{
+						prefabName = xmlElement.child_value("prefab");
+					}
+					else if (!std::strcmp(xmlElement.name(), "player"))
+					{
+						prefabName = "player";
+					}
+					else if (!std::strcmp(xmlElement.name(), "target"))
+					{
+						prefabName = "target";
+					}
+					else
+					{
+						std::cerr << "Unknown prefab  [" << xmlElement.name() << "]." << std::endl;
+						continue;
+					}
+
+					auto prefab = std::make_unique<Prefab>(prefabName);
+					auto entity = prefab->instantiate(_context);
+
+					if (entity)
+					{
+						auto transform = entity->getComponent<components::Transform>();
+
 						int row = std::stoi(xmlElement.child_value("row"));
 						assert(row >= 0 && row < _rows);
 
 						int column = std::stoi(xmlElement.child_value("column"));
 						assert(column >= 0 && column < _columns);
 
-						std::string archetypeName = xmlElement.child_value("archetype");
+						transform->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
-						auto enemyEntity{ new entities::Enemy{ _context, archetypeName } };
-						EntityPtr entity{ enemyEntity };
-						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
-						enemyEntity->propagateTransform();
+						auto player = entity->getComponent<components::Player>();
+						if (player)
+						{
+							_playerComponent = player;
+						}
 
 						_entities.insert(std::move(entity));
 					}
-
-					if (!std::strcmp(xmlElement.name(), "player"))
+					else
 					{
-						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < _rows);
-
-						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < _columns);
-
-						_playerEntity = new entities::Player{ _context };
-						EntityPtr entity{ _playerEntity };
-						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
-						_playerEntity->propagateTransform();
-
-						_entities.insert(std::move(entity));
-					}
-
-					if (!std::strcmp(xmlElement.name(), "target"))
-					{
-						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < _rows);
-
-						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < _columns);
-
-						auto targetEntity = new entities::Target{ _context };
-						EntityPtr entity{ targetEntity };
-						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
-						targetEntity->propagateTransform();
-
-						_entities.insert(std::move(entity));
+						std::cerr << "Prefab [" << prefabName << "] instantiated no entity." << std::endl;
 					}
 				}
 
@@ -148,10 +145,10 @@ namespace engine
 			}
 		}
 
-		const entities::Player &Manager::getPlayer() const
+		const components::Player &Manager::getPlayer() const
 		{
-			assert(_playerEntity);
-			return *_playerEntity;
+			assert(_playerComponent);
+			return *_playerComponent;
 		}
 
 		sf::Vector2f Manager::getViewCenter() const
@@ -162,7 +159,7 @@ namespace engine
 		void Manager::removeEntities()
 		{
 			_entities.clear();
-			_playerEntity = nullptr;
+			_playerComponent = nullptr;
 		}
 	}
 }

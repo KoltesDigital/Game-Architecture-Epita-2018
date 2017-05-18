@@ -1,5 +1,7 @@
 #include "Entity.hpp"
 
+#include <engine/gameplay/Component.hpp>
+
 namespace engine
 {
 	namespace gameplay
@@ -9,38 +11,30 @@ namespace engine
 		{
 		}
 
-		const sf::Vector2f &Entity::getPosition() const
+		void Entity::update()
 		{
-			return _position;
+			for (auto &component : _components)
+			{
+				component->update();
+			}
 		}
 
-		void Entity::setPosition(const sf::Vector2f &newPosition)
+		void Entity::onTransformChange()
 		{
-			_position = newPosition;
-			updateTransform();
+			for (auto &component : _components)
+			{
+				component->onTransformChange();
+			}
 		}
 
-		float Entity::getRotation() const
+		EntityContext &Entity::getContext()
 		{
-			return _rotation;
+			return _context;
 		}
 
-		void Entity::setRotation(float newRotation)
+		const EntityContext &Entity::getContext() const
 		{
-			_rotation = newRotation;
-			updateTransform();
-		}
-
-		const sf::Transform &Entity::getTransform() const
-		{
-			return _transform;
-		}
-
-		void Entity::updateTransform()
-		{
-			_transform = sf::Transform::Identity;
-			_transform.translate(_position);
-			_transform.rotate(_rotation);
+			return const_cast<Entity *>(this)->getContext();
 		}
 	}
 }

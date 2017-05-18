@@ -76,11 +76,11 @@ namespace engine
 			_shapeListInstances.erase(it);
 		}
 
-		void Manager::setShapeListInstanceTransform(ShapeListId id, const sf::Transform & transform)
+		void Manager::setShapeListInstanceMatrix(ShapeListId id, const sf::Transform &matrix)
 		{
 			// TODO Optimize (kd-tree...)
 			ShapeListInstance *instance = id;
-			instance->transform = transform;
+			instance->transform = matrix;
 		}
 
 		void Manager::draw()

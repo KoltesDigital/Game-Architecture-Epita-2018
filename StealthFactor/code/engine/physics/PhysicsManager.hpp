@@ -1,21 +1,31 @@
 #pragma once
 
-#include <set>
 #include <vector>
 #include <ode/collision.h>
+#include <SFML/System/Vector2.hpp>
+#include <engine/physics/CollisionEntities.hpp>
 
 namespace engine
 {
-	namespace gameplay
-	{
-		class Entity;
-	}
-
 	namespace physics
 	{
 		class Manager
 		{
 		public:
+			bool setUp();
+			void tearDown();
+
+			void update();
+
+			dGeomID createCollisionBox(const gameplay::Entity &entity);
+			void destroyCollisionVolume(dGeomID id);
+
+			void setCollisionVolumePosition(dGeomID id, const sf::Vector2f &position);
+			void setCollisionBoxSize(dGeomID id, const sf::Vector2f &size);
+
+			EntitySet getCollisionsWith(dGeomID object) const;
+
+		private:
 			struct Collision
 			{
 				dGeomID o1;
@@ -26,17 +36,6 @@ namespace engine
 
 			using Collisions = std::vector<Collision>;
 
-			bool setUp();
-			void tearDown();
-
-			void update();
-
-			dGeomID createCollisionBox(gameplay::Entity *entity, float width, float height);
-			void destroyCollisionVolume(dGeomID id);
-
-			std::set<gameplay::Entity *> getCollisionsWith(dGeomID object) const;
-
-		private:
 			dSpaceID _spaceId{};
 			Collisions _frameCollisions;
 

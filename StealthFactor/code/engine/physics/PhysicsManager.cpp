@@ -38,10 +38,10 @@ namespace engine
 			dSpaceCollide(_spaceId, &_frameCollisions, &Manager::nearCallback);
 		}
 
-		dGeomID Manager::createCollisionBox(gameplay::Entity *entity, float width, float height)
+		dGeomID Manager::createCollisionBox(const gameplay::Entity &entity)
 		{
-			auto id = dCreateBox(_spaceId, width, height, 1.f);
-			dGeomSetData(id, entity);
+			auto id = dCreateBox(_spaceId, 0.f, 0., 0.f);
+			dGeomSetData(id, const_cast<gameplay::Entity *>(&entity));
 			return id;
 		}
 
@@ -50,19 +50,30 @@ namespace engine
 			dGeomDestroy(id);
 		}
 
-		std::set<gameplay::Entity *> Manager::getCollisionsWith(dGeomID object) const
+		void Manager::setCollisionVolumePosition(dGeomID id, const sf::Vector2f &position)
 		{
-			std::set<gameplay::Entity *> entityCollisions;
+			dGeomSetPosition(id, position.x, position.y, 0.f);
+		}
+
+		void Manager::setCollisionBoxSize(dGeomID id, const sf::Vector2f &size)
+		{
+			assert(dGeomGetClass(id) == dBoxClass);
+			dGeomBoxSetLengths(id, size.x, size.y, 1.f);
+		}
+
+		EntitySet Manager::getCollisionsWith(dGeomID object) const
+		{
+			EntitySet entityCollisions;
 
 			for (auto &collision : _frameCollisions)
 			{
 				if (collision.o1 == object)
 				{
-					entityCollisions.insert(reinterpret_cast<gameplay::Entity *>(dGeomGetData(collision.o2)));
+					entityCollisions.push_back(reinterpret_cast<const gameplay::Entity *>(dGeomGetData(collision.o2)));
 				}
 				if (collision.o2 == object)
 				{
-					entityCollisions.insert(reinterpret_cast<gameplay::Entity *>(dGeomGetData(collision.o1)));
+					entityCollisions.push_back(reinterpret_cast<const gameplay::Entity *>(dGeomGetData(collision.o1)));
 				}
 			}
 

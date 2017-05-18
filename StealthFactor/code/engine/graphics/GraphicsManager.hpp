@@ -28,7 +28,7 @@ namespace engine
 			ShapeListId createShapeListInstance(const std::string &name);
 			void destroyShapeListInstance(ShapeListId id);
 
-			void setShapeListInstanceTransform(ShapeListId id, const sf::Transform &transform);
+			void setShapeListInstanceMatrix(ShapeListId id, const sf::Transform &matrix);
 
 			void draw();
 
