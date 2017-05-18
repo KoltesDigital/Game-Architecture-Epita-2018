@@ -4,7 +4,6 @@
 #include <set>
 #include <string>
 #include <SFML/System/Vector2.hpp>
-#include <engine/graphics/ViewProvider.hpp>
 #include <engine/gameplay/Entity.hpp>
 #include <engine/gameplay/EntityContext.hpp>
 #include <engine/gameplay/EntityListener.hpp>
@@ -18,7 +17,7 @@ namespace engine
 			class Player;
 		}
 
-		class Manager : public graphics::ViewProvider, public EntityListener
+		class Manager : public EntityListener
 		{
 		public:
 			Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager);
@@ -34,9 +33,6 @@ namespace engine
 			void gameOver() override;
 			void loadNextMap() override;
 			const components::Player &getPlayer() const override;
-
-			// ViewProvider
-			sf::Vector2f getViewCenter() const override;
 
 			static const float CELL_SIZE;
 

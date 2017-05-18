@@ -3,8 +3,8 @@
 #include <cassert>
 #include <SFML/Window/Event.hpp>
 #include <engine/input/InputManager.hpp>
+#include <engine/graphics/Camera.hpp>
 #include <engine/graphics/ShapeListInstance.hpp>
-#include <engine/graphics/ViewProvider.hpp>
 #include <engine/gameplay/GameplayManager.hpp>
 #include <engine/Engine.hpp>
 
@@ -12,9 +12,8 @@ namespace engine
 {
 	namespace graphics
 	{
-		Manager::Manager(EventListener &eventListener, ViewProvider &viewProvider)
+		Manager::Manager(EventListener &eventListener)
 			: _eventListener{ eventListener }
-			, _viewProvider{ viewProvider }
 		{
 		}
 
@@ -52,6 +51,56 @@ namespace engine
 			}
 		}
 
+		void Manager::draw()
+		{
+			_window.clear(sf::Color::Black);
+
+			assert(_activeCamera);
+			sf::View view{ _activeCamera->getPosition(), sf::Vector2f{ (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT } };
+			_window.setView(view);
+
+			for (auto &instance : _shapeListInstances)
+			{
+				sf::RenderStates renderStates{ instance->transform };
+				for (auto &shape : instance->shapeList.getShapes())
+				{
+					_window.draw(*shape, renderStates);
+				}
+			}
+
+			_window.display();
+		}
+
+		CameraId Manager::createCamera()
+		{
+			auto camera{ new Camera() };
+			_cameras.insert(CameraPtr{ camera });
+			return camera;
+		}
+
+		void Manager::destroyCamera(CameraId id)
+		{
+			auto it = std::find_if(std::begin(_cameras), std::end(_cameras), [id](auto &camera)
+			{
+				return camera.get() == id;
+			});
+			assert(it != std::end(_cameras));
+			_cameras.erase(it);
+		}
+
+		void Manager::setCameraActive(CameraId id)
+		{
+			assert(id);
+			_activeCamera = id;
+		}
+
+		void Manager::setCameraPosition(CameraId id, const sf::Vector2f &position)
+		{
+			assert(id);
+			auto camera = id;
+			camera->setPosition(position);
+		}
+
 		ShapeListId Manager::createShapeListInstance(const std::string &name)
 		{
 			auto instance{ new ShapeListInstance() };
@@ -81,25 +130,6 @@ namespace engine
 			// TODO Optimize (kd-tree...)
 			ShapeListInstance *instance = id;
 			instance->transform = matrix;
-		}
-
-		void Manager::draw()
-		{
-			_window.clear(sf::Color::Black);
-
-			sf::View view{ _viewProvider.getViewCenter(), sf::Vector2f{(float)WINDOW_WIDTH, (float)WINDOW_HEIGHT} };
-			_window.setView(view);
-
-			for (auto &instance : _shapeListInstances)
-			{
-				sf::RenderStates renderStates{ instance->transform };
-				for (auto &shape : instance->shapeList.getShapes())
-				{
-					_window.draw(*shape, renderStates);
-				}
-			}
-
-			_window.display();
 		}
 	}
 }

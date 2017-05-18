@@ -3,6 +3,7 @@
 #include <memory>
 #include <set>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <engine/graphics/CameraId.hpp>
 #include <engine/graphics/ShapeListId.hpp>
 
 namespace engine
@@ -11,13 +12,13 @@ namespace engine
 
 	namespace graphics
 	{
+		class Camera;
 		struct ShapeListInstance;
-		class ViewProvider;
 
 		class Manager
 		{
 		public:
-			Manager(EventListener &eventListener, ViewProvider &viewProvider);
+			Manager(EventListener &eventListener);
 			~Manager();
 
 			bool setUp();
@@ -25,20 +26,33 @@ namespace engine
 
 			void pollEvents();
 
+			void draw();
+
+			// Cameras
+
+			CameraId createCamera();
+			void destroyCamera(CameraId id);
+
+			void setCameraActive(CameraId id);
+			void setCameraPosition(CameraId id, const sf::Vector2f &position);
+
+			// ShapeListInstance
+
 			ShapeListId createShapeListInstance(const std::string &name);
 			void destroyShapeListInstance(ShapeListId id);
 
 			void setShapeListInstanceMatrix(ShapeListId id, const sf::Transform &matrix);
 
-			void draw();
-
 		private:
+			using CameraPtr = std::unique_ptr<Camera>;
 			using ShapeListInstancePtr = std::unique_ptr<ShapeListInstance>;
 
 			EventListener &_eventListener;
-			ViewProvider &_viewProvider;
 
 			sf::RenderWindow _window;
+
+			std::set<CameraPtr> _cameras;
+			Camera *_activeCamera{};
 
 			std::set<ShapeListInstancePtr> _shapeListInstances;
 

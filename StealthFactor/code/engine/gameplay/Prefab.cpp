@@ -4,6 +4,7 @@
 #include <sstream>
 #include <pugixml/pugixml.hpp>
 #include <engine/gameplay/Entity.hpp>
+#include <engine/gameplay/components/Camera.hpp>
 #include <engine/gameplay/components/CollisionBox.hpp>
 #include <engine/gameplay/components/Enemy.hpp>
 #include <engine/gameplay/components/Player.hpp>
@@ -41,7 +42,12 @@ namespace engine
 
 				for (auto &xmlElement : xmlMap.child("components").children())
 				{
-					if (!std::strcmp(xmlElement.name(), "collision_box"))
+					if (!std::strcmp(xmlElement.name(), "camera"))
+					{
+						entity->addComponent<components::Camera>();
+					}
+
+					else if (!std::strcmp(xmlElement.name(), "collision_box"))
 					{
 						auto &collisionBox = entity->addComponent<components::CollisionBox>();
 
