@@ -9,13 +9,15 @@ namespace engine
 {
 	namespace graphics
 	{
+		struct ShapeListDescriptor;
+
 		class ShapeList
 		{
 		public:
 			using ShapePtr = std::unique_ptr<sf::Shape>;
 			using Shapes = std::vector<ShapePtr>;
 
-			bool load(const std::string &name);
+			ShapeList(ShapeListDescriptor &descriptor);
 
 			const Shapes &getShapes() const;
 

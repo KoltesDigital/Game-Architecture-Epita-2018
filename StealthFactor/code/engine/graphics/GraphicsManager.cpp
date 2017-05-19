@@ -4,6 +4,7 @@
 #include <SFML/Window/Event.hpp>
 #include <engine/input/InputManager.hpp>
 #include <engine/graphics/Camera.hpp>
+#include <engine/graphics/ShapeListDescriptor.hpp>
 #include <engine/graphics/ShapeListInstance.hpp>
 #include <engine/gameplay/GameplayManager.hpp>
 #include <engine/Engine.hpp>
@@ -103,13 +104,14 @@ namespace engine
 
 		ShapeListId Manager::createShapeListInstance(const std::string &name)
 		{
-			auto instance{ new ShapeListInstance() };
-			ShapeListInstancePtr instanceUPtr{ instance };
-
-			if (!instance->shapeList.load(name))
+			ShapeListDescriptor descriptor;
+			if (!descriptor.load(name))
 			{
 				return nullptr;
 			}
+
+			auto instance{ new ShapeListInstance{ descriptor } };
+			ShapeListInstancePtr instanceUPtr{ instance };
 
 			_shapeListInstances.insert(std::move(instanceUPtr));
 			return instance;
