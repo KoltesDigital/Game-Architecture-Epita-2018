@@ -3,6 +3,7 @@ characterset "Unicode"
 cppdialect "C++11"
 
 defines {
+	"_USE_MATH_DEFINES",
 	"dSINGLE",
 }
 
@@ -181,6 +182,37 @@ project "Sandbox"
 	}
 	links {
 		"Engine",
+	}
+	kind "ConsoleApp"
+	-- rtti "Off"
+	runsWithDependencies()
+
+project "gtest"
+	files {
+		"code/gmock/**",
+		"code/gtest/**",
+	}
+	includedirs {
+		"code",
+		"code/gmock",
+		"code/gtest",
+		"dep/include",
+	}
+	kind "StaticLib"
+	-- rtti "Off"
+
+project "UnitTests"
+	files {
+		"code/unittests/**",
+	}
+	includedirs {
+		"code",
+		"dep/include",
+	}
+	links {
+		"Engine",
+		"gtest",
+		"Platform",
 	}
 	kind "ConsoleApp"
 	-- rtti "Off"
