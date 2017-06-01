@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype>
+	<shapelist>boss_lvl_42</shapelist>
+	<vision_radius>3.1</vision_radius>
+	<shoot_delay>17</shoot_delay>
+</archetype>

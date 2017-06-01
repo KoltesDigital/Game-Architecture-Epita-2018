@@ -24,10 +24,10 @@ namespace engine
 
 			void Enemy::update()
 			{
-				if (_shapeListNameHasChanged)
+				if (_archetypeHasChanged)
 				{
-					_shapeListNameHasChanged = false;
-					getEntity().getComponent<Renderer>()->setShapeListName(_shapeListName);
+					_archetypeHasChanged = false;
+					getEntity().getComponent<Renderer>()->setShapeListName(_archetype.shapeListName);
 				}
 
 				auto &player = getEntity().getContext().entityListener.getPlayer();
@@ -39,9 +39,9 @@ namespace engine
 					auto offset = myPosition - playerPosition;
 					offset /= gameplay::Manager::CELL_SIZE;
 					float distance2 = offset.x * offset.x + offset.y * offset.y;
-					if (distance2 <= _visionRadius * _visionRadius)
+					if (distance2 <= _archetype.visionRadius * _archetype.visionRadius)
 					{
-						if (_shootDelayCounter < _shootDelay)
+						if (_shootDelayCounter < _archetype.shootDelay)
 						{
 							++_shootDelayCounter;
 						}
@@ -57,38 +57,10 @@ namespace engine
 				}
 			}
 
-			void Enemy::setArchetypeName(const std::string &archetypeName)
+			void Enemy::setArchetype(const Archetype &archetype)
 			{
-				std::stringstream filename;
-				filename << "archetypes/" << archetypeName << ".xml";
-
-				pugi::xml_document doc;
-				pugi::xml_parse_result result = doc.load_file(filename.str().c_str());
-
-				if (result)
-				{
-					assert(!doc.empty());
-					auto xmlArchetype = doc.first_child();
-
-					std::string newShapeListName = xmlArchetype.child_value("shapelist");
-					if (newShapeListName != _shapeListName)
-					{
-						_shapeListName = newShapeListName;
-						_shapeListNameHasChanged = true;
-					}
-
-					_visionRadius = std::stof(xmlArchetype.child_value("vision_radius"));
-					assert(_visionRadius > 0.f);
-
-					_shootDelay = std::stoi(xmlArchetype.child_value("shoot_delay"));
-					assert(_shootDelay >= 0);
-				}
-				else
-				{
-					std::cerr << "Archetype [" << archetypeName << "] parsed with errors." << std::endl;
-					std::cerr << "Error description: " << result.description() << std::endl;
-					std::cerr << "Error offset: " << result.offset << std::endl;
-				}
+				_archetype = archetype;
+				_archetypeHasChanged = true;
 			}
 		}
 	}

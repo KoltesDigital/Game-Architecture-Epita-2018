@@ -6,7 +6,7 @@
 			<height>45</height>
 		</collision_box>
 		<enemy>
-			<archetype>guard</archetype>
+			<archetype>archetypes/guard.xml</archetype>
 		</enemy>
 		<renderer>
 		</renderer>

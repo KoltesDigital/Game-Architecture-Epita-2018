@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <engine/gameplay/Archetype.hpp>
 #include <engine/gameplay/Component.hpp>
 
 namespace engine
@@ -16,15 +17,13 @@ namespace engine
 
 				void update() override;
 
-				void setArchetypeName(const std::string &archetypeName);
+				void setArchetype(const Archetype &archetype);
 
 			private:
-				std::string _shapeListName;
-				float _visionRadius{ 0.f };
-				int _shootDelay{ 0 };
+				Archetype _archetype;
 				int _shootDelayCounter{ 0 };
 
-				bool _shapeListNameHasChanged{ false };
+				bool _archetypeHasChanged{ false };
 			};
 		}
 	}
