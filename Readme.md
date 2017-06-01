@@ -51,3 +51,10 @@ To generate the solution files, execute:
 * Camera system.
 * Separation between Model and View.
 * Visitor pattern.
+
+## Session #5
+
+* Serialization.
+* More visitor pattern.
+* Unit tests.
+* More separation between Model and View.
