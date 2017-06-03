@@ -1,7 +1,27 @@
 #include <iostream>
 #include <cli.hpp>
+#include <SFML/System/Thread.hpp>
 #include <platform/SetWorkingDirectory.hpp>
 #include <engine/Engine.hpp>
+
+void launchGame()
+{
+	engine::Engine engine{};
+
+	if (!engine.loadConfiguration())
+	{
+		return;
+	}
+
+	if (!engine.setUp())
+	{
+		engine.tearDown();
+		return;
+	}
+
+	engine.run();
+	engine.tearDown();
+}
 
 int main(int argc, const char **argv)
 {
@@ -21,21 +41,11 @@ int main(int argc, const char **argv)
 		return EXIT_FAILURE;
 	}
 
-	engine::Engine engine{};
+	sf::Thread t1{ &launchGame };
+	t1.launch();
 
-	if (!engine.loadConfiguration())
-	{
-		return EXIT_FAILURE;
-	}
-
-	if (!engine.setUp())
-	{
-		engine.tearDown();
-		return EXIT_FAILURE;
-	}
-
-	engine.run();
-	engine.tearDown();
+	sf::Thread t2{ &launchGame };
+	// t2.launch();
 
 	return EXIT_SUCCESS;
 }

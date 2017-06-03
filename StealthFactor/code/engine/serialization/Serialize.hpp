@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace engine
 {
 	namespace serialization
@@ -8,5 +10,8 @@ namespace engine
 
 		template <typename T>
 		void serialize(T &, Serializer &serializer);
+
+		template <typename T>
+		std::string getClassName();
 	}
 }

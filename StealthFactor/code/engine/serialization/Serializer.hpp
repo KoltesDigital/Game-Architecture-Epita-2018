@@ -21,6 +21,12 @@ namespace engine
 				}
 			}
 
+			template <typename T>
+			void processValue(T &value)
+			{
+				process(&value, TypeInfoValue<T>::value);
+			}
+
 		protected:
 			virtual bool beginName(const std::string &name) = 0;
 			virtual void endName() = 0;

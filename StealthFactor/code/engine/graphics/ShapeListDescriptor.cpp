@@ -43,8 +43,8 @@ namespace engine
 			{
 				Init()
 				{
-					value.registerClass<graphics::CircleDescriptor>("circle");
-					value.registerClass<graphics::RectangleDescriptor>("rectangle");
+					value.registerClass<graphics::CircleDescriptor>();
+					value.registerClass<graphics::RectangleDescriptor>();
 				}
 			} init;
 		};
@@ -66,10 +66,23 @@ namespace engine
 		}
 
 		template <>
+		std::string getClassName<graphics::ShapeDescriptor>()
+		{
+			assert(false);
+			return "";
+		}
+
+		template <>
 		void serialize<graphics::CircleDescriptor>(graphics::CircleDescriptor &descriptor, serialization::Serializer &serializer)
 		{
 			serialize(static_cast<graphics::ShapeDescriptor &>(descriptor), serializer);
 			serializer.declare("radius", descriptor.radius);
+		}
+
+		template <>
+		std::string getClassName<graphics::CircleDescriptor>()
+		{
+			return "circle";
 		}
 
 		template <>
@@ -78,6 +91,12 @@ namespace engine
 			serialize(static_cast<graphics::ShapeDescriptor &>(descriptor), serializer);
 			serializer.declare("width", descriptor.width);
 			serializer.declare("height", descriptor.height);
+		}
+
+		template <>
+		std::string getClassName<graphics::RectangleDescriptor>()
+		{
+			return "rectangle";
 		}
 
 		template <>

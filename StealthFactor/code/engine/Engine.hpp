@@ -6,6 +6,7 @@
 #include <engine/frontend/FrontendManager.hpp>
 #include <engine/graphics/GraphicsManager.hpp>
 #include <engine/input/InputManager.hpp>
+#include <engine/network/NetworkManager.hpp>
 #include <engine/Configuration.hpp>
 #include <engine/EventListener.hpp>
 
@@ -26,6 +27,7 @@ namespace engine
 
 		// EventListener
 		void onEvent(const sf::Event &event) override;
+		void onChat(const std::string &text) override;
 
 	private:
 		assets::Manager _assetsManager;
@@ -33,6 +35,7 @@ namespace engine
 		frontend::Manager _frontendManager;
 		graphics::Manager _graphicsManager;
 		input::Manager _inputManager;
+		network::Manager _networkManager;
 
 		bool _running;
 		float _deltaTime;

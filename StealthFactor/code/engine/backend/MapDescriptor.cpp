@@ -28,9 +28,21 @@ namespace engine
 		}
 
 		template <>
+		std::string getClassName<backend::TargetDescriptor>()
+		{
+			return "target";
+		}
+
+		template <>
 		void serialize<backend::PlayerDescriptor>(backend::PlayerDescriptor &descriptor, serialization::Serializer &serializer)
 		{
 			serialize(static_cast<backend::HasPositionDescriptor &>(descriptor), serializer);
+		}
+
+		template <>
+		std::string getClassName<backend::PlayerDescriptor>()
+		{
+			return "player";
 		}
 
 		template <>
@@ -38,6 +50,12 @@ namespace engine
 		{
 			serialize(static_cast<backend::HasPositionDescriptor &>(descriptor), serializer);
 			serializer.declare("archetype", descriptor.archetypeName);
+		}
+
+		template <>
+		std::string getClassName<backend::EnemyDescriptor>()
+		{
+			return "enemy";
 		}
 
 		template <>

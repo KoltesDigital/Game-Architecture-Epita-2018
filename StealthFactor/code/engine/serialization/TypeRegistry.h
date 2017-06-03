@@ -23,9 +23,9 @@ namespace engine
 			};
 
 			template <typename T>
-			void registerClass(const std::string &name)
+			void registerClass()
 			{
-				auto pair = _infoByNames.insert(std::make_pair(name, Info
+				auto pair = _infoByNames.insert(std::make_pair(getClassName<T>(), Info
 				{
 					[]() -> void *
 					{

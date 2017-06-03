@@ -13,5 +13,11 @@ namespace engine
 			serializer.declare("g", color.g);
 			serializer.declare("b", color.b);
 		}
+
+		template <>
+		std::string getClassName<sf::Color>()
+		{
+			return "color";
+		}
 	}
 }

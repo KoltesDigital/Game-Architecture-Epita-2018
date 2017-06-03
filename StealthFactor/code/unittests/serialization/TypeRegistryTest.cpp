@@ -15,13 +15,19 @@ namespace engine
 		{
 		}
 
+		template <>
+		std::string getClassName<Foo>()
+		{
+			return "foo";
+		}
+
 		TEST(TypeRegistryTest, Create)
 		{
 			TypeRegistry registry;
 
-			registry.registerClass<Foo>("foo");
+			registry.registerClass<Foo>();
 
-			auto fooInfo = registry.getInfo("foo");
+			auto fooInfo = registry.getInfo(getClassName<Foo>());
 			ASSERT_TRUE(fooInfo);
 			EXPECT_EQ(Type::SerializablePtr, fooInfo->typeInfo.type);
 			auto foo{ fooInfo->create() };
