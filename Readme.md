@@ -58,3 +58,10 @@ To generate the solution files, execute:
 * More visitor pattern.
 * Unit tests.
 * More separation between Model and View.
+
+## Session #6
+
+* Command pattern.
+* Advanced Command: Undo-Redo.
+* Mock classes.
+* Metrics.
