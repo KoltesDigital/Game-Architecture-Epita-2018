@@ -19,3 +19,8 @@ To generate the solution files, execute:
 2. [ODE](http://www.ode.org/), a physics engine
 3. [pugixml](http://pugixml.org/), an XML parser (header-only)
 4. [SFML](https://www.sfml-dev.org/), a small multimedia framework
+
+## Session #1
+
+* Architecture principle: rely on lower level, cannot access to higher level.
+* Overview of a typical game engine architecture.
