@@ -24,3 +24,13 @@ To generate the solution files, execute:
 
 * Architecture principle: rely on lower level, cannot access to higher level.
 * Overview of a typical game engine architecture.
+
+## Session #2
+
+* Dependency cycles to be avoided.
+* Singletons can facilitate architecture breakings.
+* Division of responsibilities.
+* Interfaces to break dependency cycles.
+* Dependency injection, dependency inversion.
+* pImpl.
+* void*: C-style pointer to user data.
