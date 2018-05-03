@@ -27,8 +27,8 @@ namespace engine
 			void setActive(bool active);
 
 		private:
-			std::set<sf::Keyboard::Key> justPressedKeys;
-			std::set<sf::Keyboard::Key> justReleasedKeys;
+			std::set<sf::Keyboard::Key> _justPressedKeys;
+			std::set<sf::Keyboard::Key> _justReleasedKeys;
 			bool _active{ true };
 		};
 	}

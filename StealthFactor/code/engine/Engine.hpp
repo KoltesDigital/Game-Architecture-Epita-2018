@@ -26,15 +26,15 @@ namespace engine
 		void onEvent(const sf::Event &event) override;
 
 	private:
-		gameplay::Manager gameplayManager;
-		graphics::Manager graphicsManager;
-		input::Manager inputManager;
-		physics::Manager physicsManager;
+		gameplay::Manager _gameplayManager;
+		graphics::Manager _graphicsManager;
+		input::Manager _inputManager;
+		physics::Manager _physicsManager;
 
-		bool running;
-		float deltaTime;
+		bool _running;
+		float _deltaTime;
 
 		// Configuration
-		std::string startMap;
+		std::string _startMap;
 	};
 }

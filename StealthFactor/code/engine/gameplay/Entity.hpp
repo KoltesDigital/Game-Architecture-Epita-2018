@@ -26,7 +26,7 @@ namespace engine
 			const sf::Transform &getTransform() const;
 
 		protected:
-			EntityContext & context;
+			EntityContext & _context;
 
 		private:
 			sf::Vector2f _position{};

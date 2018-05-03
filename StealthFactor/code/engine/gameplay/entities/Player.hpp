@@ -18,7 +18,7 @@ namespace engine
 				bool hasJustMoved() const;
 
 			private:
-				bool justMoved{ false };
+				bool _justMoved{ false };
 			};
 		}
 	}

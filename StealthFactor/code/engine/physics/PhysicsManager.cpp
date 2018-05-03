@@ -16,15 +16,15 @@ namespace engine
 		{
 			dInitODE();
 
-			spaceId = dHashSpaceCreate(0);
-			return spaceId != nullptr;
+			_spaceId = dHashSpaceCreate(0);
+			return _spaceId != nullptr;
 		}
 
 		void Manager::tearDown()
 		{
-			if (spaceId != nullptr)
+			if (_spaceId != nullptr)
 			{
-				dSpaceDestroy(spaceId);
+				dSpaceDestroy(_spaceId);
 			}
 
 			dCloseODE();
@@ -32,20 +32,20 @@ namespace engine
 
 		void Manager::update()
 		{
-			frameCollisions.clear();
-			dSpaceCollide(spaceId, &frameCollisions, &Manager::nearCallback);
+			_frameCollisions.clear();
+			dSpaceCollide(_spaceId, &_frameCollisions, &Manager::nearCallback);
 		}
 
 		const dSpaceID Manager::getSpaceId() const
 		{
-			return spaceId;
+			return _spaceId;
 		}
 
 		std::set<dGeomID> Manager::getCollisionsWith(dGeomID object) const
 		{
 			std::set<dGeomID> objectCollisions;
 
-			for (auto &collision : frameCollisions)
+			for (auto &collision : _frameCollisions)
 			{
 				if (collision.o1 == object)
 				{
@@ -62,8 +62,8 @@ namespace engine
 
 		void Manager::nearCallback(void *data, dGeomID o1, dGeomID o2)
 		{
-			auto &frameCollisions = *reinterpret_cast<Collisions *>(data);
-			frameCollisions.emplace_back(o1, o2);
+			auto &_frameCollisions = *reinterpret_cast<Collisions *>(data);
+			_frameCollisions.emplace_back(o1, o2);
 		}
 	}
 }

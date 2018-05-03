@@ -17,9 +17,9 @@ namespace engine
 				virtual void update() override;
 
 			private:
-				float visionRadius{ 0 };
-				int shootDelay{ 0 };
-				int shootDelayCounter{ 0 };
+				float _visionRadius{ 0 };
+				int _shootDelay{ 0 };
+				int _shootDelayCounter{ 0 };
 
 				void loadArchetype(const std::string &archetypeName);
 			};

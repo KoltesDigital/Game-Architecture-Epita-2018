@@ -31,8 +31,8 @@ namespace engine
 			std::set<dGeomID> getCollisionsWith(dGeomID object) const;
 
 		private:
-			dSpaceID spaceId{};
-			Collisions frameCollisions;
+			dSpaceID _spaceId{};
+			Collisions _frameCollisions;
 
 			static void nearCallback(void *data, dGeomID o1, dGeomID o2);
 		};

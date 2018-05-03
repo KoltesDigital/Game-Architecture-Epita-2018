@@ -9,8 +9,8 @@
 namespace engine
 {
 	Engine::Engine()
-		: graphicsManager{ *this, gameplayManager }
-		, gameplayManager{ graphicsManager, inputManager, physicsManager }
+		: _graphicsManager{ *this, _gameplayManager }
+		, _gameplayManager{ _graphicsManager, _inputManager, _physicsManager }
 	{
 	}
 
@@ -23,7 +23,7 @@ namespace engine
 		{
 			assert(!doc.empty());
 			auto configuration = doc.first_child();
-			startMap = configuration.child_value("start_map");
+			_startMap = configuration.child_value("start_map");
 
 			return true;
 		}
@@ -39,12 +39,12 @@ namespace engine
 
 	bool Engine::setUp()
 	{
-		if (!graphicsManager.setUp())
+		if (!_graphicsManager.setUp())
 		{
 			return false;
 		}
 
-		if (!physicsManager.setUp())
+		if (!_physicsManager.setUp())
 		{
 			return false;
 		}
@@ -54,38 +54,38 @@ namespace engine
 
 	void Engine::tearDown()
 	{
-		physicsManager.tearDown();
-		graphicsManager.tearDown();
+		_physicsManager.tearDown();
+		_graphicsManager.tearDown();
 	}
 
 	void Engine::run()
 	{
-		running = true;
+		_running = true;
 
-		gameplayManager.loadMap(startMap);
+		_gameplayManager.loadMap(_startMap);
 
 		sf::Clock clock;
-		while (running)
+		while (_running)
 		{
-			deltaTime = clock.restart().asSeconds();
+			_deltaTime = clock.restart().asSeconds();
 
-			inputManager.clear();
+			_inputManager.clear();
 
-			physicsManager.update();
-			graphicsManager.update();
-			gameplayManager.update();
+			_physicsManager.update();
+			_graphicsManager.update();
+			_gameplayManager.update();
 
-			graphicsManager.clear();
+			_graphicsManager.clear();
 
-			gameplayManager.draw();
+			_gameplayManager.draw();
 
-			graphicsManager.display();
+			_graphicsManager.display();
 		}
 	}
 
 	float Engine::getDeltaTime() const
 	{
-		return deltaTime;
+		return _deltaTime;
 	}
 
 	void Engine::onEvent(const sf::Event &event)
@@ -93,23 +93,23 @@ namespace engine
 		switch (event.type)
 		{
 		case sf::Event::Closed:
-			running = false;
+			_running = false;
 			break;
 
 		case sf::Event::LostFocus:
-			inputManager.setActive(false);
+			_inputManager.setActive(false);
 			break;
 
 		case sf::Event::GainedFocus:
-			inputManager.setActive(true);
+			_inputManager.setActive(true);
 			break;
 
 		case sf::Event::KeyPressed:
-			inputManager.onKeyPressed(event.key);
+			_inputManager.onKeyPressed(event.key);
 			break;
 
 		case sf::Event::KeyReleased:
-			inputManager.onKeyReleased(event.key);
+			_inputManager.onKeyReleased(event.key);
 			break;
 		}
 	}

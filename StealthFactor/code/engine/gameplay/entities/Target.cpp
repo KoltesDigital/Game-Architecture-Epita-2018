@@ -14,26 +14,26 @@ namespace engine
 			Target::Target(EntityContext &context)
 				: Entity{ context }
 			{
-				shapeList.load("target");
+				_shapeList.load("target");
 
-				collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
-				dGeomSetData(collisionGeomId, this);
+				_collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
+				dGeomSetData(_collisionGeomId, this);
 			}
 
 			Target::~Target()
 			{
-				dGeomDestroy(collisionGeomId);
+				dGeomDestroy(_collisionGeomId);
 			}
 
 			void Target::update()
 			{
 				auto &position = getPosition();
-				dGeomSetPosition(collisionGeomId, position.x, position.y, 0);
+				dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
 			}
 
 			void Target::draw()
 			{
-				context.graphicsManager.draw(shapeList, getTransform());
+				_context.graphicsManager.draw(_shapeList, getTransform());
 			}
 		}
 	}

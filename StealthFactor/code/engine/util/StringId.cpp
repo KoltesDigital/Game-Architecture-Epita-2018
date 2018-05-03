@@ -4,18 +4,18 @@ namespace engine
 {
 	namespace util
 	{
-		std::hash<std::string> StringId::hasher;
+		std::hash<std::string> StringId::_hasher;
 
 		StringId::StringId()
-			: hash{ 0 }
+			: _hash{ 0 }
 		{
 			// empty
 		}
 
 		StringId::StringId(const std::string &str)
-			: hash{ hasher(str) }
+			: _hash{ _hasher(str) }
 #ifdef DEBUG
-			, str{ str }
+			, _str{ str }
 #endif
 		{
 			// empty
@@ -23,23 +23,23 @@ namespace engine
 
 		bool StringId::operator ==(const StringId &other) const
 		{
-			return hash == other.hash;
+			return _hash == other._hash;
 		}
 
 		bool StringId::operator <(const StringId &other) const
 		{
-			return hash < other.hash;
+			return _hash < other._hash;
 		}
 
 #ifdef DEBUG
 		StringId::operator const std::string &() const
 		{
-			return str;
+			return _str;
 		}
 #else
 		StringId::operator std::size_t() const
 		{
-			return hash;
+			return _hash;
 		}
 #endif
 	}

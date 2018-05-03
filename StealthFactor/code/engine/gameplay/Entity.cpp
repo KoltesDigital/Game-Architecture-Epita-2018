@@ -5,7 +5,7 @@ namespace engine
 	namespace gameplay
 	{
 		Entity::Entity(EntityContext &context)
-			: context{ context }
+			: _context{ context }
 		{
 		}
 

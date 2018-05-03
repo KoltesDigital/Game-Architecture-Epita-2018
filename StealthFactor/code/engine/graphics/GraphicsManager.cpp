@@ -14,45 +14,45 @@ namespace engine
 	namespace graphics
 	{
 		Manager::Manager(EventListener &eventListener, ViewProvider &viewProvider)
-			: eventListener{ eventListener }
-			, viewProvider{ viewProvider }
+			: _eventListener{ eventListener }
+			, _viewProvider{ viewProvider }
 		{
 		}
 
 		bool Manager::setUp()
 		{
-			window.create(sf::VideoMode{ (unsigned int)WINDOW_WIDTH, (unsigned int)WINDOW_HEIGHT }, "Stealth Factor");
+			_window.create(sf::VideoMode{ (unsigned int)WINDOW_WIDTH, (unsigned int)WINDOW_HEIGHT }, "Stealth Factor");
 
-			if (!window.isOpen())
+			if (!_window.isOpen())
 			{
 				return false;
 			}
 
-			window.setVerticalSyncEnabled(true);
+			_window.setVerticalSyncEnabled(true);
 
 			return true;
 		}
 
 		void Manager::tearDown()
 		{
-			window.close();
+			_window.close();
 		}
 
 		void Manager::update()
 		{
 			sf::Event event;
-			while (window.pollEvent(event))
+			while (_window.pollEvent(event))
 			{
-				eventListener.onEvent(event);
+				_eventListener.onEvent(event);
 			}
 		}
 
 		void Manager::clear()
 		{
-			window.clear(sf::Color::Black);
+			_window.clear(sf::Color::Black);
 
-			sf::View view{ viewProvider.getViewCenter(), sf::Vector2f{(float)WINDOW_WIDTH, (float)WINDOW_HEIGHT} };
-			window.setView(view);
+			sf::View view{ _viewProvider.getViewCenter(), sf::Vector2f{(float)WINDOW_WIDTH, (float)WINDOW_HEIGHT} };
+			_window.setView(view);
 		}
 
 		void Manager::draw(const ShapeList &shapeList, const sf::Transform &transform)
@@ -60,13 +60,13 @@ namespace engine
 			sf::RenderStates renderStates{ transform };
 			for (auto shape : shapeList.getShapes())
 			{
-				window.draw(*shape, renderStates);
+				_window.draw(*shape, renderStates);
 			}
 		}
 
 		void Manager::display()
 		{
-			window.display();
+			_window.display();
 		}
 	}
 }

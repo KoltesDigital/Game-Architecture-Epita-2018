@@ -20,69 +20,69 @@ namespace engine
 			Player::Player(EntityContext &context)
 				: Character{ context }
 			{
-				shapeList.load("player");
+				_shapeList.load("player");
 
-				collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
-				dGeomSetData(collisionGeomId, this);
+				_collisionGeomId = dCreateBox(context.physicsManager.getSpaceId(), gameplay::Manager::CELL_SIZE * 0.9f, gameplay::Manager::CELL_SIZE * 0.9f, 1.f);
+				dGeomSetData(_collisionGeomId, this);
 			}
 
 			void Player::update()
 			{
-				justMoved = false;
+				_justMoved = false;
 				auto position = getPosition();
 				float rotation = getRotation();
 
-				if (context.inputManager.isKeyJustPressed(sf::Keyboard::Left))
+				if (_context.inputManager.isKeyJustPressed(sf::Keyboard::Left))
 				{
-					justMoved = true;
+					_justMoved = true;
 					position.x -= gameplay::Manager::CELL_SIZE;
 					rotation = 180.f;
 				}
 
-				if (context.inputManager.isKeyJustPressed(sf::Keyboard::Right))
+				if (_context.inputManager.isKeyJustPressed(sf::Keyboard::Right))
 				{
-					justMoved = true;
+					_justMoved = true;
 					position.x += gameplay::Manager::CELL_SIZE;
 					rotation = 0.f;
 				}
 
-				if (context.inputManager.isKeyJustPressed(sf::Keyboard::Up))
+				if (_context.inputManager.isKeyJustPressed(sf::Keyboard::Up))
 				{
-					justMoved = true;
+					_justMoved = true;
 					position.y -= gameplay::Manager::CELL_SIZE;
 					rotation = -90.f;
 				}
 
-				if (context.inputManager.isKeyJustPressed(sf::Keyboard::Down))
+				if (_context.inputManager.isKeyJustPressed(sf::Keyboard::Down))
 				{
-					justMoved = true;
+					_justMoved = true;
 					position.y += gameplay::Manager::CELL_SIZE;
 					rotation = 90.f;
 				}
 
-				if (justMoved)
+				if (_justMoved)
 				{
 					setPosition(position);
 					setRotation(rotation);
 
-					dGeomSetPosition(collisionGeomId, position.x, position.y, 0);
+					dGeomSetPosition(_collisionGeomId, position.x, position.y, 0);
 				}
 
-				auto collisions = context.physicsManager.getCollisionsWith(collisionGeomId);
+				auto collisions = _context.physicsManager.getCollisionsWith(_collisionGeomId);
 				for (auto &geomId : collisions)
 				{
 					auto entity = reinterpret_cast<Entity *>(dGeomGetData(geomId));
 					auto targetEntity = dynamic_cast<entities::Target *>(entity);
 					if (targetEntity)
 					{
-						context.entityListener.loadNextMap();
+						_context.entityListener.loadNextMap();
 					}
 				}
 			}
 
 			bool Player::hasJustMoved() const
 			{
-				return justMoved;
+				return _justMoved;
 			}
 		}
 	}

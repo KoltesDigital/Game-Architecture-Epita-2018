@@ -22,7 +22,7 @@ namespace engine
 			const Shapes &getShapes() const;
 
 		private:
-			Shapes shapes;
+			Shapes _shapes;
 		};
 	}
 }

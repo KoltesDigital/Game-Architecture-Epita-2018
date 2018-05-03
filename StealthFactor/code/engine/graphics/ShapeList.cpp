@@ -50,7 +50,7 @@ namespace engine
 						shape->setOutlineColor(outlineColor);
 						shape->setOutlineThickness(outlineThickness);
 
-						shapes.push_back(shape);
+						_shapes.push_back(shape);
 					}
 
 					if (!std::strcmp(xmlShape.name(), "rectangle"))
@@ -79,7 +79,7 @@ namespace engine
 						shape->setOutlineColor(outlineColor);
 						shape->setOutlineThickness(outlineThickness);
 
-						shapes.push_back(shape);
+						_shapes.push_back(shape);
 					}
 				}
 
@@ -97,7 +97,7 @@ namespace engine
 
 		const ShapeList::Shapes &ShapeList::getShapes() const
 		{
-			return shapes;
+			return _shapes;
 		}
 	}
 }

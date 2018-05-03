@@ -26,10 +26,10 @@ namespace engine
 			void display();
 
 		private:
-			EventListener &eventListener;
-			ViewProvider &viewProvider;
+			EventListener & _eventListener;
+			ViewProvider & _viewProvider;
 
-			sf::RenderWindow window;
+			sf::RenderWindow _window;
 
 			static const sf::Int16 WINDOW_WIDTH = 800;
 			static const sf::Int16 WINDOW_HEIGHT = 600;

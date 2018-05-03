@@ -21,7 +21,7 @@ namespace engine
 
 			void Enemy::update()
 			{
-				auto &player = context.entityListener.getPlayer();
+				auto &player = _context.entityListener.getPlayer();
 				if (player.hasJustMoved())
 				{
 					auto &playerPosition = player.getPosition();
@@ -30,20 +30,20 @@ namespace engine
 					auto offset = myPosition - playerPosition;
 					offset /= gameplay::Manager::CELL_SIZE;
 					float distance2 = offset.x * offset.x + offset.y * offset.y;
-					if (distance2 <= visionRadius * visionRadius)
+					if (distance2 <= _visionRadius * _visionRadius)
 					{
-						if (shootDelayCounter < shootDelay)
+						if (_shootDelayCounter < _shootDelay)
 						{
-							++shootDelayCounter;
+							++_shootDelayCounter;
 						}
 						else
 						{
-							context.entityListener.gameOver();
+							_context.entityListener.gameOver();
 						}
 					}
 					else
 					{
-						shootDelayCounter = 0;
+						_shootDelayCounter = 0;
 					}
 				}
 			}
@@ -62,13 +62,13 @@ namespace engine
 					auto xmlArchetype = doc.first_child();
 
 					std::string shapeListName = xmlArchetype.child_value("shapelist");
-					assert(shapeList.load(shapeListName));
+					assert(_shapeList.load(shapeListName));
 
-					visionRadius = std::stof(xmlArchetype.child_value("vision_radius"));
-					assert(visionRadius > 0.f);
+					_visionRadius = std::stof(xmlArchetype.child_value("vision_radius"));
+					assert(_visionRadius > 0.f);
 
-					shootDelay = std::stoi(xmlArchetype.child_value("shoot_delay"));
-					assert(shootDelay >= 0);
+					_shootDelay = std::stoi(xmlArchetype.child_value("shoot_delay"));
+					assert(_shootDelay >= 0);
 				}
 				else
 				{

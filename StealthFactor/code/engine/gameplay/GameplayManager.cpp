@@ -17,28 +17,28 @@ namespace engine
 		const float Manager::CELL_SIZE = 50.f;
 
 		Manager::Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager)
-			: context{ graphicsManager, inputManager, physicsManager, *this }
+			: _context{ graphicsManager, inputManager, physicsManager, *this }
 		{
 		}
 
 		void Manager::update()
 		{
-			for (auto entity : entities)
+			for (auto entity : _entities)
 			{
 				entity->update();
 			}
 
-			preventMapCompletion = false;
-			if (nextMapRequested && !nextMapName.empty())
+			_preventMapCompletion = false;
+			if (_nextMapRequested && !_nextMapName.empty())
 			{
-				nextMapRequested = false;
-				loadMap(nextMapName);
+				_nextMapRequested = false;
+				loadMap(_nextMapName);
 			}
 		}
 
 		void Manager::draw()
 		{
-			for (auto entity : entities)
+			for (auto entity : _entities)
 			{
 				entity->draw();
 			}
@@ -46,11 +46,11 @@ namespace engine
 
 		void Manager::loadMap(const std::string &mapName)
 		{
-			for (auto entity : entities)
+			for (auto entity : _entities)
 			{
 				delete entity;
 			}
-			entities.clear();
+			_entities.clear();
 
 			std::stringstream filename;
 			filename << "maps/" << mapName << ".xml";
@@ -63,66 +63,66 @@ namespace engine
 				assert(!doc.empty());
 				auto xmlMap = doc.first_child();
 
-				rows = std::stoi(xmlMap.child_value("rows"));
-				assert(rows >= 0);
+				_rows = std::stoi(xmlMap.child_value("rows"));
+				assert(_rows >= 0);
 
-				columns = std::stoi(xmlMap.child_value("columns"));
-				assert(columns >= 0);
+				_columns = std::stoi(xmlMap.child_value("columns"));
+				assert(_columns >= 0);
 
 				for (auto &xmlElement : xmlMap.child("elements").children())
 				{
 					if (!std::strcmp(xmlElement.name(), "enemy"))
 					{
 						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < rows);
+						assert(row >= 0 && row < _rows);
 
 						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < columns);
+						assert(column >= 0 && column < _columns);
 
 						std::string archetypeName = xmlElement.child_value("archetype");
 
-						auto entity = new entities::Enemy{ context, archetypeName };
+						auto entity = new entities::Enemy{ _context, archetypeName };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
-						entities.insert(entity);
+						_entities.insert(entity);
 					}
 
 					if (!std::strcmp(xmlElement.name(), "player"))
 					{
 						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < rows);
+						assert(row >= 0 && row < _rows);
 
 						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < columns);
+						assert(column >= 0 && column < _columns);
 
-						auto entity = new entities::Player{ context };
+						auto entity = new entities::Player{ _context };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
-						entities.insert(entity);
-						playerEntity = entity;
+						_entities.insert(entity);
+						_playerEntity = entity;
 					}
 
 					if (!std::strcmp(xmlElement.name(), "target"))
 					{
 						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < rows);
+						assert(row >= 0 && row < _rows);
 
 						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < columns);
+						assert(column >= 0 && column < _columns);
 
-						auto entity = new entities::Target{ context };
+						auto entity = new entities::Target{ _context };
 						entity->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
 
-						entities.insert(entity);
+						_entities.insert(entity);
 					}
 				}
 
-				currentMapName = mapName;
-				nextMapName = xmlMap.child_value("next_map");
+				_currentMapName = mapName;
+				_nextMapName = xmlMap.child_value("next_map");
 
 				// JIRA-1337: Map is skipped.
 				// This prevents the map to be completed during the first frame. I don't know why this happens.
-				preventMapCompletion = true;
+				_preventMapCompletion = true;
 			}
 			else
 			{
@@ -135,26 +135,26 @@ namespace engine
 		void Manager::gameOver()
 		{
 			std::cout << "Game over" << std::endl;
-			loadMap(currentMapName);
+			loadMap(_currentMapName);
 		}
 
 		void Manager::loadNextMap()
 		{
-			if (!preventMapCompletion)
+			if (!_preventMapCompletion)
 			{
-				nextMapRequested = true;
+				_nextMapRequested = true;
 			}
 		}
 
 		const entities::Player &Manager::getPlayer() const
 		{
-			assert(playerEntity);
-			return *playerEntity;
+			assert(_playerEntity);
+			return *_playerEntity;
 		}
 
 		sf::Vector2f Manager::getViewCenter() const
 		{
-			return sf::Vector2f{ columns * (CELL_SIZE / 2.f), rows * (CELL_SIZE / 2.f) };
+			return sf::Vector2f{ _columns * (CELL_SIZE / 2.f), _rows * (CELL_SIZE / 2.f) };
 		}
 	}
 }

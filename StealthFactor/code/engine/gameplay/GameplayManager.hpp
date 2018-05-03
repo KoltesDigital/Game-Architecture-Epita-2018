@@ -39,19 +39,19 @@ namespace engine
 			static const float CELL_SIZE;
 
 		private:
-			EntityContext context;
+			EntityContext _context;
 
-			std::set<Entity *> entities;
-			entities::Player *playerEntity{};
+			std::set<Entity *> _entities;
+			entities::Player *_playerEntity{};
 
 			// Map
-			std::string currentMapName;
-			std::string nextMapName;
-			int rows{ 0 };
-			int columns{ 0 };
+			std::string _currentMapName;
+			std::string _nextMapName;
+			int _rows{ 0 };
+			int _columns{ 0 };
 
-			bool preventMapCompletion{ false };
-			bool nextMapRequested{ false };
+			bool _preventMapCompletion{ false };
+			bool _nextMapRequested{ false };
 		};
 	}
 }
