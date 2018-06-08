@@ -34,3 +34,12 @@ To generate the solution files, execute:
 * Dependency injection, dependency inversion.
 * pImpl.
 * void*: C-style pointer to user data.
+
+## Session #3
+
+* RAII.
+* Ownership.
+* std::unique_ptr.
+* std::shared_ptr.
+* Move semantics.
+* Interface with opaque structures through handlers.
