@@ -52,6 +52,8 @@ namespace engine
 
 			bool load(const std::string &name);
 
+			void visit(ShapeDescriptorVisitor &visitor);
+
 			const ShapeDescriptors &getShapeDescriptors() const;
 
 		private:

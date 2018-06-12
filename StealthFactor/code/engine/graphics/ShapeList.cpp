@@ -8,7 +8,7 @@ namespace engine
 {
 	namespace graphics
 	{
-		bool ShapeList::load(const std::string &name)
+		class ShapeListInstantiater : public ShapeDescriptorVisitor
 		{
 		public:
 			ShapeListInstantiater(ShapeList::Shapes &shapes)

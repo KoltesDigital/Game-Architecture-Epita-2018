@@ -49,10 +49,7 @@ namespace engine
 		TEST_F(ShapeListDescriptorTest, Visitor)
 		{
 			AreaComputer computer;
-			for (auto &shapeDescriptor : descriptor.getShapeDescriptors())
-			{
-				shapeDescriptor->accept(computer);
-			}
+			descriptor.visit(computer);
 			EXPECT_FLOAT_EQ(15.f + (float)M_PI * 4.f, computer.getArea());
 		}
 	}

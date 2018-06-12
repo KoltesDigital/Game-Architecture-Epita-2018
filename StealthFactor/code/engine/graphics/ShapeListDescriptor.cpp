@@ -80,6 +80,14 @@ namespace engine
 			}
 		}
 
+		void ShapeListDescriptor::visit(ShapeDescriptorVisitor &visitor)
+		{
+			for (auto &shapeDesc : _shapeDescriptors)
+			{
+				shapeDesc->accept(visitor);
+			}
+		}
+
 		const ShapeListDescriptor::ShapeDescriptors &ShapeListDescriptor::getShapeDescriptors() const
 		{
 			return _shapeDescriptors;

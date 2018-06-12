@@ -4,6 +4,7 @@ cppdialect "C++11"
 
 defines {
 	"_USE_MATH_DEFINES",
+	"_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING",
 	"dSINGLE",
 }
 
