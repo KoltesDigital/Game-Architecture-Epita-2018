@@ -49,11 +49,7 @@ namespace engine
 		ShapeList::ShapeList(ShapeListDescriptor &descriptor)
 		{
 			ShapeListInstantiater instantiater{ _shapes };
-
-			for (auto &shapeDescriptor : descriptor.getShapeDescriptors())
-			{
-				shapeDescriptor->accept(instantiater);
-			}
+			descriptor.visit(instantiater);
 		}
 
 		const ShapeList::Shapes &ShapeList::getShapes() const
