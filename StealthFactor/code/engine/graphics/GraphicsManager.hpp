@@ -10,6 +10,11 @@ namespace engine
 {
 	class EventListener;
 
+	namespace assets
+	{
+		class Manager;
+	}
+
 	namespace graphics
 	{
 		class Camera;
@@ -18,7 +23,7 @@ namespace engine
 		class Manager
 		{
 		public:
-			Manager(EventListener &eventListener);
+			Manager(assets::Manager &assetsManager, EventListener &eventListener);
 			~Manager();
 
 			bool setUp();
@@ -47,6 +52,7 @@ namespace engine
 			using CameraPtr = std::unique_ptr<Camera>;
 			using ShapeListInstancePtr = std::unique_ptr<ShapeListInstance>;
 
+			assets::Manager &_assetsManager;
 			EventListener &_eventListener;
 
 			sf::RenderWindow _window;

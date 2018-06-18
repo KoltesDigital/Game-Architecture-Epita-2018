@@ -1,7 +1,9 @@
 #include "engine/graphics/GraphicsManager.hpp"
 
 #include <cassert>
+#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Window/Event.hpp>
+#include <engine/assets/AssetsManager.hpp>
 #include <engine/input/InputManager.hpp>
 #include <engine/graphics/Camera.hpp>
 #include <engine/graphics/ShapeListDescriptor.hpp>
@@ -13,8 +15,9 @@ namespace engine
 {
 	namespace graphics
 	{
-		Manager::Manager(EventListener &eventListener)
-			: _eventListener{ eventListener }
+		Manager::Manager(assets::Manager &assetsManager, EventListener &eventListener)
+			: _assetsManager{ assetsManager }
+			, _eventListener{ eventListener }
 		{
 		}
 
@@ -104,13 +107,13 @@ namespace engine
 
 		ShapeListId Manager::createShapeListInstance(const std::string &name)
 		{
-			ShapeListDescriptor descriptor;
-			if (!descriptor.load(name))
+			auto descriptor{ _assetsManager.getAsset<ShapeListDescriptor>(name) };
+			if (!descriptor)
 			{
 				return nullptr;
 			}
 
-			auto instance{ new ShapeListInstance{ descriptor } };
+			auto instance{ new ShapeListInstance{ *descriptor } };
 			ShapeListInstancePtr instanceUPtr{ instance };
 
 			_shapeListInstances.insert(std::move(instanceUPtr));

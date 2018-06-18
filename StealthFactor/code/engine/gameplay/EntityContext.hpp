@@ -2,6 +2,11 @@
 
 namespace engine
 {
+	namespace assets
+	{
+		class Manager;
+	}
+
 	namespace graphics
 	{
 		class Manager;
@@ -23,6 +28,7 @@ namespace engine
 
 		struct EntityContext
 		{
+			assets::Manager &assetsManager;
 			graphics::Manager &graphicsManager;
 			input::Manager &inputManager;
 			physics::Manager &physicsManager;

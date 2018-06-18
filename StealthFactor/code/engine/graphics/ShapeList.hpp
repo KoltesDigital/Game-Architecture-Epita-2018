@@ -17,7 +17,7 @@ namespace engine
 			using ShapePtr = std::unique_ptr<sf::Shape>;
 			using Shapes = std::vector<ShapePtr>;
 
-			ShapeList(ShapeListDescriptor &descriptor);
+			ShapeList(const ShapeListDescriptor &descriptor);
 
 			const Shapes &getShapes() const;
 

@@ -46,7 +46,7 @@ namespace engine
 			}
 		};
 
-		ShapeList::ShapeList(ShapeListDescriptor &descriptor)
+		ShapeList::ShapeList(const ShapeListDescriptor &descriptor)
 		{
 			ShapeListInstantiater instantiater{ _shapes };
 			descriptor.visit(instantiater);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <pugixml/pugixml.hpp>
 #include <engine/serialization/Serializer.hpp>
 
@@ -7,21 +8,26 @@ namespace engine
 {
 	namespace serialization
 	{
+		class TypeRegistry;
+
 		class XMLLoader : public Serializer
 		{
 		public:
-			XMLLoader(const std::string &filename);
-
-			// Serializer
-			void declare(const std::string &name, float &value) override;
-			void declare(const std::string &name, int &value) override;
-			void declare(const std::string &name, std::string &value) override;
+			XMLLoader(const std::string &filename, const TypeRegistry *registry = nullptr);
 
 			bool isLoaded() const;
 
+		protected:
+			// Serializer
+			bool beginName(const std::string &name) override;
+			void endName() override;
+			void process(void *value, const TypeInfo &typeInfo) override;
+
 		private:
-			pugi::xml_document doc;
-			pugi::xml_node rootNode;
+			const TypeRegistry *_registry;
+
+			pugi::xml_document _doc;
+			std::vector<pugi::xml_node> _nodes;
 		};
 	}
 }

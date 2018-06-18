@@ -6,7 +6,7 @@
 			<height>45</height>
 		</collision_box>
 		<renderer>
-			<shapelist>target</shapelist>
+			<shapelist>shapelists/target.xml</shapelist>
 		</renderer>
 		<target>
 		</target>

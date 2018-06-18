@@ -20,7 +20,7 @@ namespace engine
 		class Manager : public EntityListener
 		{
 		public:
-			Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager);
+			Manager(assets::Manager &assetsManager, graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager);
 
 			void setUp();
 			void tearDown();

@@ -1,13 +1,18 @@
 #include "ShapeListDescriptor.hpp"
 
-#include <iostream>
-#include <sstream>
-#include <pugixml/pugixml.hpp>
+#include <engine/assets/AssetTypeRegistry.hpp>
+#include <engine/serialization/Serialize.hpp>
+#include <engine/serialization/Serializer.hpp>
 
 namespace engine
 {
 	namespace graphics
 	{
+		void ShapeDescriptor::accept(ShapeDescriptorVisitor &)
+		{
+			assert(false);
+		}
+
 		void CircleDescriptor::accept(ShapeDescriptorVisitor &visitor)
 		{
 			visitor.circle(*this);
@@ -18,79 +23,67 @@ namespace engine
 			visitor.rectangle(*this);
 		}
 
-		bool ShapeListDescriptor::load(const std::string & name)
+		void ShapeListDescriptor::visit(ShapeDescriptorVisitor &visitor) const
 		{
-			std::stringstream filename;
-			filename << "shapelists/" << name << ".xml";
-
-			pugi::xml_document doc;
-			pugi::xml_parse_result result = doc.load_file(filename.str().c_str());
-
-			if (result)
-			{
-				assert(!doc.empty());
-				auto xmlShapeList = doc.first_child();
-
-				for (auto &xmlShape : xmlShapeList.child("shapes").children())
-				{
-					ShapeDescriptorPtr shapeDescriptor;
-
-					if (!std::strcmp(xmlShape.name(), "circle"))
-					{
-						auto circleDescriptor{ new CircleDescriptor };
-						shapeDescriptor.reset(circleDescriptor);
-
-						circleDescriptor->radius = std::stof(xmlShape.child_value("radius"));
-					}
-
-					if (!std::strcmp(xmlShape.name(), "rectangle"))
-					{
-						auto rectangleDescriptor{ new RectangleDescriptor };
-						shapeDescriptor.reset(rectangleDescriptor);
-
-						rectangleDescriptor->width = std::stof(xmlShape.child_value("width"));
-						rectangleDescriptor->height = std::stof(xmlShape.child_value("height"));
-					}
-
-					shapeDescriptor->x = std::stof(xmlShape.child_value("x"));
-					shapeDescriptor->y = std::stof(xmlShape.child_value("y"));
-
-					shapeDescriptor->fillColor.r = (sf::Uint8)std::stoi(xmlShape.child("fill_color").child_value("r"));
-					shapeDescriptor->fillColor.g = (sf::Uint8)std::stoi(xmlShape.child("fill_color").child_value("g"));
-					shapeDescriptor->fillColor.b = (sf::Uint8)std::stoi(xmlShape.child("fill_color").child_value("b"));
-
-					shapeDescriptor->outlineColor.r = (sf::Uint8)std::stoi(xmlShape.child("outline_color").child_value("r"));
-					shapeDescriptor->outlineColor.g = (sf::Uint8)std::stoi(xmlShape.child("outline_color").child_value("g"));
-					shapeDescriptor->outlineColor.b = (sf::Uint8)std::stoi(xmlShape.child("outline_color").child_value("b"));
-
-					shapeDescriptor->outlineThickness = std::stof(xmlShape.child_value("outline_thickness"));
-
-					_shapeDescriptors.push_back(std::move(shapeDescriptor));
-				}
-
-				return true;
-			}
-			else
-			{
-				std::cerr << "Shape list [" << name << "] parsed with errors." << std::endl;
-				std::cerr << "Error description: " << result.description() << std::endl;
-				std::cerr << "Error offset: " << result.offset << std::endl;
-
-				return false;
-			}
-		}
-
-		void ShapeListDescriptor::visit(ShapeDescriptorVisitor &visitor)
-		{
-			for (auto &shapeDesc : _shapeDescriptors)
+			for (auto &shapeDesc : shapeDescriptors)
 			{
 				shapeDesc->accept(visitor);
 			}
 		}
+	}
 
-		const ShapeListDescriptor::ShapeDescriptors &ShapeListDescriptor::getShapeDescriptors() const
+	namespace assets
+	{
+		template <>
+		struct AssetTypeRegistry<graphics::ShapeListDescriptor>
 		{
-			return _shapeDescriptors;
+			static serialization::TypeRegistry value;
+
+			static struct Init
+			{
+				Init()
+				{
+					value.registerClass<graphics::CircleDescriptor>("circle");
+					value.registerClass<graphics::RectangleDescriptor>("rectangle");
+				}
+			} init;
+		};
+
+		serialization::TypeRegistry AssetTypeRegistry<graphics::ShapeListDescriptor>::value;
+		AssetTypeRegistry<graphics::ShapeListDescriptor>::Init AssetTypeRegistry<graphics::ShapeListDescriptor>::init;
+	}
+
+	namespace serialization
+	{
+		template <>
+		void serialize<graphics::ShapeDescriptor>(graphics::ShapeDescriptor &descriptor, serialization::Serializer &serializer)
+		{
+			serializer.declare("x", descriptor.x);
+			serializer.declare("y", descriptor.y);
+			serializer.declare("fill_color", descriptor.fillColor);
+			serializer.declare("outline_color", descriptor.outlineColor);
+			serializer.declare("outline_thickness", descriptor.outlineThickness);
+		}
+
+		template <>
+		void serialize<graphics::CircleDescriptor>(graphics::CircleDescriptor &descriptor, serialization::Serializer &serializer)
+		{
+			serialize(static_cast<graphics::ShapeDescriptor &>(descriptor), serializer);
+			serializer.declare("radius", descriptor.radius);
+		}
+
+		template <>
+		void serialize<graphics::RectangleDescriptor>(graphics::RectangleDescriptor &descriptor, serialization::Serializer &serializer)
+		{
+			serialize(static_cast<graphics::ShapeDescriptor &>(descriptor), serializer);
+			serializer.declare("width", descriptor.width);
+			serializer.declare("height", descriptor.height);
+		}
+
+		template <>
+		void serialize<graphics::ShapeListDescriptor>(graphics::ShapeListDescriptor &descriptor, serialization::Serializer &serializer)
+		{
+			serializer.declare("shapes", descriptor.shapeDescriptors);
 		}
 	}
 }

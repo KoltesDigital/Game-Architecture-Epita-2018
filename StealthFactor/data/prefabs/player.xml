@@ -8,7 +8,7 @@
 		<player>
 		</player>
 		<renderer>
-			<shapelist>player</shapelist>
+			<shapelist>shapelists/player.xml</shapelist>
 		</renderer>
 	</components>
 </prefab>

@@ -12,7 +12,7 @@
 			<column>4</column>
 		</target>
 		<enemy>
-			<prefab>guard</prefab>
+			<prefab>prefabs/guard.xml</prefab>
 			<row>2</row>
 			<column>2</column>
 		</enemy>

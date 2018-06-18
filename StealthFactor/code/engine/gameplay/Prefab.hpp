@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <string>
+#include <vector>
+#include <engine/assets/Asset.hpp>
 
 namespace engine
 {
@@ -10,15 +11,19 @@ namespace engine
 		class Entity;
 		struct EntityContext;
 
-		class Prefab
+		struct PrefabComponent;
+
+		struct Prefab : public assets::Asset
 		{
-		public:
-			Prefab(const std::string &name);
+			using ComponentPtr = std::unique_ptr<PrefabComponent>;
+			using Components = std::vector<ComponentPtr>;
+
+			Components components;
+
+			Prefab();
+			~Prefab();
 
 			std::unique_ptr<Entity> instantiate(EntityContext &context) const;
-
-		private:
-			std::string _name;
 		};
 	}
 }

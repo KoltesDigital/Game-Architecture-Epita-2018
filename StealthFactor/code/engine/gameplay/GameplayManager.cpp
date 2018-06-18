@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <pugixml/pugixml.hpp>
+#include <engine/assets/AssetsManager.hpp>
 #include <engine/gameplay/Prefab.hpp>
 #include <engine/gameplay/components/Camera.hpp>
 #include <engine/gameplay/components/Player.hpp>
@@ -16,8 +17,8 @@ namespace engine
 	{
 		const float Manager::CELL_SIZE = 50.f;
 
-		Manager::Manager(graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager)
-			: _context{ graphicsManager, inputManager, physicsManager, *this }
+		Manager::Manager(assets::Manager &assetsManager, graphics::Manager &graphicsManager, input::Manager &inputManager, physics::Manager &physicsManager)
+			: _context{ assetsManager, graphicsManager, inputManager, physicsManager, *this }
 		{
 		}
 
@@ -76,11 +77,11 @@ namespace engine
 					}
 					else if (!std::strcmp(xmlElement.name(), "player"))
 					{
-						prefabName = "player";
+						prefabName = "prefabs/player.xml";
 					}
 					else if (!std::strcmp(xmlElement.name(), "target"))
 					{
-						prefabName = "target";
+						prefabName = "prefabs/target.xml";
 					}
 					else
 					{
@@ -88,36 +89,40 @@ namespace engine
 						continue;
 					}
 
-					auto prefab = std::make_unique<Prefab>(prefabName);
-					auto entity = prefab->instantiate(_context);
-
-					if (entity)
+					auto prefab{ _context.assetsManager.getAsset<Prefab>(prefabName) };
+					if (!prefab)
 					{
-						auto transform = entity->getComponent<components::Transform>();
-
-						int row = std::stoi(xmlElement.child_value("row"));
-						assert(row >= 0 && row < _rows);
-
-						int column = std::stoi(xmlElement.child_value("column"));
-						assert(column >= 0 && column < _columns);
-
-						transform->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
-
-						auto player = entity->getComponent<components::Player>();
-						if (player)
-						{
-							_playerComponent = player;
-						}
-
-						_entities.insert(std::move(entity));
+						std::cerr << "Prefab [" << prefabName << "] does not exist." << std::endl;
+						continue;
 					}
-					else
+
+					auto entity{ prefab->instantiate(_context) };
+					if (!entity)
 					{
 						std::cerr << "Prefab [" << prefabName << "] instantiated no entity." << std::endl;
+						continue;
 					}
+
+					auto transform = entity->getComponent<components::Transform>();
+
+					int row = std::stoi(xmlElement.child_value("row"));
+					assert(row >= 0 && row < _rows);
+
+					int column = std::stoi(xmlElement.child_value("column"));
+					assert(column >= 0 && column < _columns);
+
+					transform->setPosition(sf::Vector2f{ (column + 0.5f) * CELL_SIZE, (row + 0.5f) * CELL_SIZE });
+
+					auto player = entity->getComponent<components::Player>();
+					if (player)
+					{
+						_playerComponent = player;
+					}
+
+					_entities.insert(std::move(entity));
 				}
 
-				auto cameraPrefab = std::make_unique<Prefab>("camera");
+				auto cameraPrefab = _context.assetsManager.getAsset<Prefab>("prefabs/camera.xml");
 				auto cameraEntity = cameraPrefab->instantiate(_context);
 				cameraEntity->getComponent<components::Camera>()->setActive();
 				cameraEntity->getComponent<components::Transform>()->setPosition(sf::Vector2f{ _columns * (CELL_SIZE / 2.f), _rows * (CELL_SIZE / 2.f) });
