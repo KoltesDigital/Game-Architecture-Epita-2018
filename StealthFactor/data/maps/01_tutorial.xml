@@ -2,15 +2,13 @@
 <map>
 	<rows>1</rows>
 	<columns>3</columns>
-	<elements>
-		<player>
-			<row>0</row>
-			<column>0</column>
-		</player>
-		<target>
-			<row>0</row>
-			<column>2</column>
-		</target>
-	</elements>
-	<next_map>02_tutorial_guard</next_map>
+	<target>
+		<row>0</row>
+		<column>2</column>
+	</target>
+	<player>
+		<row>0</row>
+		<column>0</column>
+	</player>
+	<next_map>maps/02_tutorial_guard.xml</next_map>
 </map>

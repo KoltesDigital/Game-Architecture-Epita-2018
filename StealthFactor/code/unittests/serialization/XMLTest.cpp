@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <engine/assets/AssetTypeRegistry.hpp>
-#include <engine/gameplay/Archetype.hpp>
+#include <engine/backend/Archetype.hpp>
 #include <engine/graphics/ShapeListDescriptor.hpp>
 #include <engine/serialization/Serialize.hpp>
 #include <engine/serialization/XMLLoader.hpp>
@@ -15,9 +15,9 @@ namespace engine
 			XMLLoader loader{ "archetypes/boss.xml" };
 			ASSERT_TRUE(loader.isLoaded());
 
-			gameplay::Archetype boss;
+			backend::Archetype boss;
 			serialize(boss, loader);
-			EXPECT_STREQ("boss_lvl_42", boss.shapeListName.c_str());
+			EXPECT_STREQ("boss_lvl_42", boss.prefabName.c_str());
 			EXPECT_FLOAT_EQ(3.1f, boss.visionRadius);
 			EXPECT_EQ(17, boss.shootDelay);
 		}

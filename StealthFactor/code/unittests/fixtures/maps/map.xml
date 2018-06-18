@@ -17,5 +17,4 @@
 			<archetype>archetypes/guard.xml</archetype>
 		</enemy>
 	</enemies>
-	<next_map>maps/02_tutorial_guard.xml</next_map>
 </map>

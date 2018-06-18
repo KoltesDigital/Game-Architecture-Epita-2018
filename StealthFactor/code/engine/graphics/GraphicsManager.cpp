@@ -8,7 +8,7 @@
 #include <engine/graphics/Camera.hpp>
 #include <engine/graphics/ShapeListDescriptor.hpp>
 #include <engine/graphics/ShapeListInstance.hpp>
-#include <engine/gameplay/GameplayManager.hpp>
+#include <engine/frontend/FrontendManager.hpp>
 #include <engine/Engine.hpp>
 
 namespace engine

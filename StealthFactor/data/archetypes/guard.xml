@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archetype>
-	<shapelist>shapelists/guard.xml</shapelist>
+	<prefab>prefabs/guard.xml</prefab>
 	<vision_radius>1.5</vision_radius>
 	<shoot_delay>1</shoot_delay>
 </archetype>

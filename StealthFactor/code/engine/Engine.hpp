@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
-#include <engine/EventListener.hpp>
 #include <engine/assets/AssetsManager.hpp>
-#include <engine/gameplay/GameplayManager.hpp>
+#include <engine/backend/BackendManager.hpp>
+#include <engine/frontend/FrontendManager.hpp>
 #include <engine/graphics/GraphicsManager.hpp>
-#include <engine/physics/PhysicsManager.hpp>
 #include <engine/input/InputManager.hpp>
+#include <engine/Configuration.hpp>
+#include <engine/EventListener.hpp>
 
 namespace engine
 {
@@ -28,15 +29,15 @@ namespace engine
 
 	private:
 		assets::Manager _assetsManager;
-		gameplay::Manager _gameplayManager;
+		backend::Manager _backendManager;
+		frontend::Manager _frontendManager;
 		graphics::Manager _graphicsManager;
 		input::Manager _inputManager;
-		physics::Manager _physicsManager;
 
 		bool _running;
 		float _deltaTime;
 
 		// Configuration
-		std::string _startMap;
+		Configuration _configuration;
 	};
 }

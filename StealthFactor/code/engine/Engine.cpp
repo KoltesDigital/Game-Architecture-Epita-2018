@@ -10,31 +10,16 @@ namespace engine
 {
 	Engine::Engine()
 		: _graphicsManager{ _assetsManager, *this }
-		, _gameplayManager{ _assetsManager, _graphicsManager, _inputManager, _physicsManager }
+		, _backendManager{ _frontendManager, _assetsManager, _inputManager }
+		, _frontendManager{ _assetsManager, _graphicsManager }
 	{
 	}
 
 	bool Engine::loadConfiguration()
 	{
-		pugi::xml_document doc;
-		pugi::xml_parse_result result = doc.load_file("configuration.xml");
-
-		if (result)
-		{
-			assert(!doc.empty());
-			auto configuration = doc.first_child();
-			_startMap = configuration.child_value("start_map");
-
-			return true;
-		}
-		else
-		{
-			std::cerr << "Configuration parsed with errors." << std::endl;
-			std::cerr << "Error description: " << result.description() << std::endl;
-			std::cerr << "Error offset: " << result.offset << std::endl;
-
-			return false;
-		}
+		serialization::XMLLoader loader{ "configuration.xml" };
+		serialization::serialize(_configuration, loader);
+		return loader.isLoaded();
 	}
 
 	bool Engine::setUp()
@@ -44,20 +29,14 @@ namespace engine
 			return false;
 		}
 
-		if (!_physicsManager.setUp())
-		{
-			return false;
-		}
-
-		_gameplayManager.setUp();
+		_frontendManager.setUp();
 
 		return true;
 	}
 
 	void Engine::tearDown()
 	{
-		_gameplayManager.tearDown();
-		_physicsManager.tearDown();
+		_frontendManager.tearDown();
 		_graphicsManager.tearDown();
 	}
 
@@ -65,7 +44,7 @@ namespace engine
 	{
 		_running = true;
 
-		_gameplayManager.loadMap(_startMap);
+		_backendManager.loadMap(_configuration.startMap);
 
 		sf::Clock clock;
 		while (_running)
@@ -74,9 +53,9 @@ namespace engine
 
 			_inputManager.clear();
 
-			_physicsManager.update();
 			_graphicsManager.pollEvents();
-			_gameplayManager.update();
+
+			_backendManager.update();
 
 			_graphicsManager.draw();
 		}

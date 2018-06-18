@@ -5,7 +5,6 @@ cppdialect "C++11"
 defines {
 	"_USE_MATH_DEFINES",
 	"_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING",
-	"dSINGLE",
 }
 
 flags {
@@ -66,7 +65,6 @@ filter "platforms:Win64"
 function runsWithDependencies()
 	filter "configurations:Debug"
 		links {
-			"ode_singled",
 			"sfml-graphics-d",
 			"sfml-network-d",
 			"sfml-system-d",
@@ -75,7 +73,6 @@ function runsWithDependencies()
 
 	filter "configurations:Release"
 		links {
-			"ode_single",
 			"sfml-graphics",
 			"sfml-network",
 			"sfml-system",

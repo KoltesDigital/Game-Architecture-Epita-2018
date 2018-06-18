@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <prefab>
 	<components>
-		<collision_box>
-			<width>45</width>
-			<height>45</height>
-		</collision_box>
 		<renderer>
 			<shapelist>shapelists/target.xml</shapelist>
 		</renderer>
-		<target>
-		</target>
 	</components>
 </prefab>
